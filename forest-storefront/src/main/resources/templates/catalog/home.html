@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>方寸森林 · 桌面生态补给站</title>
+  <link rel="stylesheet" th:href="@{/css/forest.css}">
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="container">
+  <section class="hero">
+    <div><p class="eyebrow">A LITTLE FOREST, A LITTLE PEACE</p>
+      <h1>把一小片森林，<br>安放在你的桌面。</h1>
+      <p>从一瓶苔藓开始，慢慢搭建属于自己的微小世界。</p>
+      <a class="button" th:href="@{/category}">探索生态补给 <span aria-hidden="true">↗</span></a>
+    </div>
+    <img th:src="@{/images/terrarium.svg}" alt="玻璃容器中的苔藓与蕨类插画" width="480" height="360">
+  </section>
+  <section aria-labelledby="categories-heading">
+    <div class="section-heading"><h2 id="categories-heading">从这里开始</h2><span>为每一寸绿意找到补给</span></div>
+    <div class="category-links">
+      <a th:each="category : ${categories}" th:href="@{/category(categoryId=${category.id})}"
+         th:text="${category.name}">分类</a>
+    </div>
+    <p class="empty-state" th:if="${#lists.isEmpty(categories)}">暂无商品分类。</p>
+  </section>
+  <section aria-labelledby="featured-heading">
+    <div class="section-heading"><h2 id="featured-heading">精选生态补给</h2><a th:href="@{/category}">查看全部 →</a></div>
+    <div th:replace="~{fragments/layout :: cards(${products})}"></div>
+    <p class="empty-state" th:if="${#lists.isEmpty(products)}">暂无上架商品，稍后再来看看。</p>
+  </section>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

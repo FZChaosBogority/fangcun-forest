@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>访问提示 · 方寸森林</title>
+  <link rel="stylesheet" th:href="@{/css/forest.css}">
+</head>
+<body>
+  <main class="container error-page">
+    <p class="eyebrow">FANGCUN FOREST</p>
+    <h1 th:text="${status}">访问提示</h1>
+    <p th:text="${message}">请稍后重试。</p>
+    <a class="button" th:href="@{/}">返回首页</a>
+  </main>
+</body>
+</html>

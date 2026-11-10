@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="|${product.name} · 方寸森林|">商品详情</title><link rel="stylesheet" th:href="@{/css/forest.css}">
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="container">
+  <nav class="breadcrumb" aria-label="当前位置"><a th:href="@{/category}">全部补给</a>
+    <span>/</span><a th:href="@{/category(categoryId=${category.id})}" th:text="${category.name}">分类</a>
+    <span>/</span><span th:text="${product.name}">商品</span></nav>
+  <article class="product-detail">
+    <img class="detail-image" th:src="${product.coverImage}" th:alt="${product.name}" width="480" height="360">
+    <div><p class="eyebrow" th:text="${product.sku}">SKU</p>
+      <h1 th:text="${product.name}">商品名</h1><p class="lead" th:text="${product.summary}">简介</p>
+      <p class="price large" th:text="|¥${#numbers.formatDecimal(product.price, 1, 2)}|"></p>
+      <p th:text="${product.stock > 0 ? '当前库存：' + product.stock : '暂时售罄'}"></p>
+      <h2>关于这份补给</h2><p class="description" th:text="${product.description}"></p>
+      <a class="text-link" th:href="@{/category}">继续探索 →</a>
+    </div>
+  </article>
+  <section th:if="${!#lists.isEmpty(images)}">
+    <h2>细节一览</h2><div class="gallery"><img th:each="image : ${images}" th:src="${image.imagePath}"
+      th:alt="${image.altText ?: product.name}" loading="lazy" width="480" height="360"></div>
+  </section>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,6 @@
+# 复制为同目录 application-local.yml，再填写本机配置。实际文件已被 Git 忽略。
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/fangcun_forest?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: "请填写本机MySQL密码"

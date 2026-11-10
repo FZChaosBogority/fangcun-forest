@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="header" class="site-header">
+  <div class="container header-inner">
+    <a class="brand" th:href="@{/}"><span class="brand-mark" aria-hidden="true">森</span>
+      <span>方寸森林<small>管理工作台</small></span></a>
+    <nav aria-label="管理导航"><a th:href="@{/}">概览</a><a th:href="@{/products}">商品</a><a th:href="@{/categories}">分类</a></nav>
+  </div>
+</header>
+<p th:fragment="notice" class="notice">当前仅开放只读预览，登录和管理操作将在后续阶段开放。</p>
+</body>
+</html>

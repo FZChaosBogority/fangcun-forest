@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>商品目录 · 方寸森林</title><link rel="stylesheet" th:href="@{/css/forest.css}">
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="container">
+  <div class="page-heading"><h1>商品目录</h1><p th:text="|共 ${result.total} 件商品|"></p></div>
+  <p th:replace="~{fragments/layout :: notice}"></p>
+  <div class="table-wrap"><table><caption class="sr-only">商品价格、库存与状态</caption>
+    <thead><tr><th>SKU</th><th>商品名称</th><th>分类编号</th><th>价格</th><th>库存</th><th>状态</th><th>版本</th></tr></thead>
+    <tbody><tr th:each="product : ${result.records}">
+      <td th:text="${product.sku}"></td><td th:text="${product.name}"></td><td th:text="${product.categoryId}"></td>
+      <td th:text="|¥${#numbers.formatDecimal(product.price, 1, 2)}|"></td><td th:text="${product.stock}"></td>
+      <td><span class="tag" th:text="${product.status.name() == 'ON_SALE' ? '已上架' : '已下架'}"></span></td>
+      <td th:text="${product.version}"></td>
+    </tr></tbody>
+  </table></div>
+  <p class="empty-state" th:if="${#lists.isEmpty(result.records)}">当前页暂无商品。<a th:href="@{/products}">返回第一页</a></p>
+  <nav class="pagination" aria-label="商品分页" th:if="${result.total > 0}">
+    <a th:if="${result.current > 1}" th:href="@{/products(page=${result.current - 1},size=${result.size})}">上一页</a>
+    <span th:text="|第 ${result.current} 页 · 共 ${result.pages} 页|"></span>
+    <a th:if="${result.current < result.pages}" th:href="@{/products(page=${result.current + 1},size=${result.size})}">下一页</a>
+  </nav>
+</main>
+</body>
+</html>

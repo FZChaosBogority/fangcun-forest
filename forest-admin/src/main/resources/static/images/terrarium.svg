@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-labelledby="title desc">
+  <title id="title">方寸森林生态瓶</title>
+  <desc id="desc">原创矢量示意图，玻璃容器里生长着苔藓与蕨类。</desc>
+  <rect width="480" height="360" fill="#e9eddf"/>
+  <circle cx="365" cy="80" r="48" fill="#f8f5df"/>
+  <ellipse cx="240" cy="322" rx="132" ry="16" fill="#cdd7c2"/>
+  <path d="M181 67h118v31c0 34 47 61 47 120v62q0 32-34 32H168q-34 0-34-32v-62c0-59 47-86 47-120z" fill="#f9fbf4" fill-opacity=".72" stroke="#8ba38c" stroke-width="3"/>
+  <path d="M138 259q48-27 103-11t101-5v37q0 28-30 28H168q-30 0-30-28z" fill="#7c9860"/>
+  <path d="M138 283q90-19 204-7v8q0 24-30 24H168q-30 0-30-25z" fill="#6b6348"/>
+  <ellipse cx="199" cy="263" rx="44" ry="16" fill="#567c43"/>
+  <ellipse cx="278" cy="255" rx="43" ry="18" fill="#91ad68"/>
+  <path d="M238 258q-5-74 27-129M239 213q-35-15-47-43M245 185q28-3 42-23M252 160q-21-10-26-28" fill="none" stroke="#496b42" stroke-width="4" stroke-linecap="round"/>
+  <g fill="#6b9255">
+    <ellipse cx="221" cy="193" rx="21" ry="9" transform="rotate(37 221 193)"/>
+    <ellipse cx="205" cy="179" rx="17" ry="8" transform="rotate(48 205 179)"/>
+    <ellipse cx="266" cy="179" rx="22" ry="9" transform="rotate(-29 266 179)"/>
+    <ellipse cx="279" cy="166" rx="17" ry="8" transform="rotate(-39 279 166)"/>
+    <ellipse cx="241" cy="151" rx="18" ry="8" transform="rotate(45 241 151)"/>
+    <ellipse cx="263" cy="137" rx="18" ry="8" transform="rotate(-57 263 137)"/>
+  </g>
+  <path d="M174 252q1-36 15-54M189 242q18-17 24-17" fill="none" stroke="#567d48" stroke-width="3"/>
+  <ellipse cx="184" cy="216" rx="10" ry="18" fill="#9bb67a" transform="rotate(26 184 216)"/>
+  <ellipse cx="203" cy="232" rx="15" ry="8" fill="#799c5b" transform="rotate(-27 203 232)"/>
+  <path d="M158 185q-12 33-10 66" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".8"/>
+  <rect x="177" y="58" width="126" height="19" rx="5" fill="#a78c61"/>
+  <path d="M185 64h110" stroke="#c4ad87" stroke-width="3"/>
+</svg>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>探索补给 · 方寸森林</title><link rel="stylesheet" th:href="@{/css/forest.css}">
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="container">
+  <div class="page-heading"><p class="eyebrow">EXPLORE THE LITTLE WORLD</p><h1>探索生态补给</h1></div>
+  <form class="search-bar" method="get" th:action="@{/category}">
+    <label for="categoryId">商品分类</label>
+    <select id="categoryId" name="categoryId">
+      <option value="">全部分类</option>
+      <option th:each="category : ${categories}" th:value="${category.id}"
+              th:text="${category.name}" th:selected="${category.id == categoryId}"></option>
+    </select>
+    <label for="keyword">商品名称</label>
+    <input id="keyword" name="keyword" type="search" maxlength="120" placeholder="搜索商品名称" th:value="${keyword}">
+    <input type="hidden" name="size" th:value="${result.size}">
+    <button class="button" type="submit">查询</button>
+    <a th:href="@{/category}">清空筛选</a>
+  </form>
+  <p class="muted" th:text="|共 ${result.total} 件商品|"></p>
+  <div th:replace="~{fragments/layout :: cards(${result.records})}"></div>
+  <div class="empty-state" th:if="${#lists.isEmpty(result.records)}">
+    <p>这一页没有找到商品，可以更换条件或返回第一页。</p>
+    <a th:href="@{/category(categoryId=${categoryId},keyword=${keyword},page=1,size=${result.size})}">返回第一页</a>
+  </div>
+  <nav class="pagination" aria-label="商品分页" th:if="${result.total > 0}">
+    <a th:if="${result.current > 1}" th:href="@{/category(categoryId=${categoryId},keyword=${keyword},page=${result.current - 1},size=${result.size})}">上一页</a>
+    <span th:text="|第 ${result.current} 页 · 共 ${result.pages} 页|"></span>
+    <a th:if="${result.current < result.pages}" th:href="@{/category(categoryId=${categoryId},keyword=${keyword},page=${result.current + 1},size=${result.size})}">下一页</a>
+  </nav>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
