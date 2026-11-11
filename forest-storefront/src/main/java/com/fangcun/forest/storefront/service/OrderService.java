@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fangcun.forest.storefront.common.BusinessException;
 import com.fangcun.forest.storefront.common.PageRequest;
+import com.fangcun.forest.storefront.common.QueryParameters;
 import com.fangcun.forest.storefront.entity.*;
 import com.fangcun.forest.storefront.enums.OrderStatus;
 import com.fangcun.forest.storefront.enums.ProductStatus;
@@ -35,13 +36,11 @@ public class OrderService {
         this.products = products; this.cartService = cartService; this.customers = customers;
     }
 
-    public CheckoutDraft prepare(long userId, List<Long> selected) {
-        if (selected == null || selected.isEmpty() || selected.size() > CartService.MAX_KINDS
-                || new HashSet<>(selected).size() != selected.size()) throw conflict("请选择要结算的商品。");
+    public CheckoutDraft prepare(long userId) {
         CartView cart = cartService.view(userId);
-        List<CartView.Line> lines = cart.lines().stream().filter(line -> selected.contains(line.item().getId())).toList();
-        if (lines.size() != selected.size()) throw conflict("所选购物车条目已变化，请重新选择。");
-        if (lines.stream().anyMatch(line -> !line.available())) throw conflict("所选商品已下架或库存不足，请调整购物车。");
+        if (cart.isEmpty()) throw conflict("购物车为空，请先挑选商品。");
+        if (!cart.isCheckoutReady()) throw conflict("购物车含下架或库存不足的商品，请调整或移除后整车结算。");
+        List<CartView.Line> lines = cart.lines();
         return new CheckoutDraft(userId, "FC" + UUID.randomUUID().toString().replace("-", ""), Instant.now(),
                 lines.stream().sorted(Comparator.comparing(line -> line.product().getId()))
                     .map(line -> new CheckoutDraft.Line(line.item().getId(), line.product().getId(),
@@ -57,6 +56,13 @@ public class OrderService {
         SalesOrder existing = orders.selectOne(new LambdaQueryWrapper<SalesOrder>()
                 .eq(SalesOrder::getOrderNo, draft.orderNo()).eq(SalesOrder::getUserId, userId));
         if (existing != null) return existing;
+        // The whole cart must still match, including items added after confirmation.
+        List<CartItem> current = carts.selectList(new LambdaQueryWrapper<CartItem>().eq(CartItem::getUserId, userId));
+        Set<Long> expectedIds = new HashSet<>(draft.lines().stream().map(CheckoutDraft.Line::cartId).toList());
+        if (expectedIds.size() != draft.lines().size() || current.size() != expectedIds.size()
+                || current.stream().anyMatch(item -> !expectedIds.contains(item.getId()))) {
+            throw conflict("整车商品已变化，请返回购物车重新确认。");
+        }
         List<SalesOrderItem> snapshots = new ArrayList<>();
         BigDecimal total = BigDecimal.ZERO;
         for (CheckoutDraft.Line line : draft.lines().stream().sorted(Comparator.comparingLong(CheckoutDraft.Line::productId)).toList()) {
@@ -94,9 +100,11 @@ public class OrderService {
         return order;
     }
 
-    public Page<SalesOrder> list(long userId, OrderStatus status, PageRequest page) {
+    public Page<SalesOrder> list(long userId, String orderNo, OrderStatus status, PageRequest page) {
+        String number = QueryParameters.text(orderNo, 40, "订单号");
         return orders.selectPage(new Page<>(page.page(), page.size()), new LambdaQueryWrapper<SalesOrder>()
                 .eq(SalesOrder::getUserId, userId).eq(status != null, SalesOrder::getStatus, status)
+                .eq(!number.isEmpty(), SalesOrder::getOrderNo, number)
                 .orderByDesc(SalesOrder::getCreatedAt, SalesOrder::getId));
     }
 
@@ -124,6 +132,14 @@ public class OrderService {
                 .set(SalesOrder::getPaymentNo, "MOCK" + UUID.randomUUID().toString().replace("-", ""))
                 .set(SalesOrder::getPaidAt, LocalDateTime.now()));
         if (updated != 1) throw conflict("订单状态已变化，请刷新查看。");
+    }
+
+    @Transactional
+    public void failPayment(long userId, long id) {
+        customers.acquire(userId);
+        SalesOrder order = owned(userId, id);
+        if (order.getStatus() != OrderStatus.PENDING_PAYMENT) throw conflict("只有待付款订单可以模拟支付失败。");
+        // Deliberately no writes: keep status, first payment fields and stock unchanged.
     }
 
     @Transactional

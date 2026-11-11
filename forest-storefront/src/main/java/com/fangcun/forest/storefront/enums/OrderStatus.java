@@ -10,4 +10,7 @@ public enum OrderStatus {
     private final String label;
     OrderStatus(String label) { this.label = label; }
     public String getLabel() { return label; }
+    public String getAmountLabel() {
+        return this == PENDING_PAYMENT ? "应付" : this == CANCELLED ? "订单金额" : "已模拟支付";
+    }
 }

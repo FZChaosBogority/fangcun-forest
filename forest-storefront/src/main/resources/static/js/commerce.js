@@ -102,20 +102,17 @@
     if (logoutPopover && !logoutPopover.hidden && !event.target.closest(".nav-account")) closeLogout(false);
   });
   restoreProductDraft();
-  const checks = [...document.querySelectorAll("[data-cart-check]:not(:disabled)")];
-  const all = document.querySelector("[data-select-all]");
-  function updateTotal() {
-    const selected = checks.filter(input => input.checked);
-    const cents = selected.reduce((sum, input) => sum + Math.round(Number(input.dataset.amount) * 100), 0);
-    const total = document.querySelector("[data-cart-total]");
-    if (total) total.textContent = "¥" + (cents / 100).toFixed(2);
-    const button = document.querySelector("[data-checkout-button]");
-    if (button) button.disabled = selected.length === 0;
-    if (all) { all.checked = checks.length > 0 && selected.length === checks.length; all.indeterminate = selected.length > 0 && selected.length < checks.length; }
+  const staticScript = document.querySelector('script[src$="/js/commerce.js"]');
+  const fallbackImage = staticScript ? new URL("../images/terrarium.svg", staticScript.src).href : "/images/terrarium.svg";
+  function recoverImage(image) {
+    if (!(image instanceof HTMLImageElement) || image.dataset.fallbackUsed) return;
+    image.dataset.fallbackUsed = "true";
+    image.src = fallbackImage;
   }
-  checks.forEach(input => input.addEventListener("change", updateTotal));
-  all?.addEventListener("change", () => { checks.forEach(input => { input.checked = all.checked; }); updateTotal(); });
-  updateTotal();
+  document.addEventListener("error", event => recoverImage(event.target), true);
+  document.querySelectorAll("img").forEach(image => {
+    if (!image.getAttribute("src") || (image.complete && !image.naturalWidth)) recoverImage(image);
+  });
   document.querySelectorAll("[data-gallery-image]").forEach(button => button.addEventListener("click", () => {
     const image = document.querySelector("[data-gallery-main]");
     if (image) { image.src = button.dataset.src; image.alt = button.dataset.alt; }

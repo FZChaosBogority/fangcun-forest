@@ -2,6 +2,7 @@ package com.fangcun.forest.storefront.controller;
 
 import com.fangcun.forest.storefront.common.BusinessException;
 import com.fangcun.forest.storefront.common.PageRequest;
+import com.fangcun.forest.storefront.common.QueryParameters;
 import com.fangcun.forest.storefront.entity.SalesOrder;
 import com.fangcun.forest.storefront.enums.OrderStatus;
 import com.fangcun.forest.storefront.security.CustomerDetails;
@@ -27,10 +28,10 @@ public class OrderController {
 
     @GetMapping("/checkout")
     public String checkout(@AuthenticationPrincipal CustomerDetails customer,
-            @RequestParam(required = false) List<Long> items, HttpSession session, Model model,
+            HttpSession session, Model model,
             RedirectAttributes redirect) {
         try {
-            CheckoutDraft draft = orders.prepare(customer.getUserId(), items);
+            CheckoutDraft draft = orders.prepare(customer.getUserId());
             model.addAttribute("draft", draft); model.addAttribute("token", tokens.store(session, draft));
             model.addAttribute("shipping", new ShippingForm());
             return "orders/checkout";
@@ -59,10 +60,12 @@ public class OrderController {
 
     @GetMapping("/orders")
     public String list(@AuthenticationPrincipal CustomerDetails customer,
-            @RequestParam(required = false) OrderStatus status,
-            @RequestParam(defaultValue = "1") long page, Model model) {
-        model.addAttribute("result", orders.list(customer.getUserId(), status, new PageRequest(page, 8)));
-        model.addAttribute("selectedStatus", status); model.addAttribute("statuses", OrderStatus.values());
+            @RequestParam(defaultValue = "") String orderNo, @RequestParam(defaultValue = "ALL") String status,
+            @RequestParam(defaultValue = "1") long page, @RequestParam(defaultValue = "10") long size, Model model) {
+        OrderStatus selected = QueryParameters.optionalEnum(OrderStatus.class, status);
+        model.addAttribute("result", orders.list(customer.getUserId(), orderNo, selected, new PageRequest(page, size)));
+        model.addAttribute("orderNo", QueryParameters.text(orderNo, 40, "订单号"));
+        model.addAttribute("selectedStatus", selected); model.addAttribute("statuses", OrderStatus.values());
         return "orders/list";
     }
 
@@ -85,6 +88,15 @@ public class OrderController {
         try { orders.pay(customer.getUserId(), id); redirect.addFlashAttribute("success", "模拟支付成功，无真实资金扣款。"); }
         catch (BusinessException exception) { redirect.addFlashAttribute("error", exception.getMessage()); }
         return "redirect:/orders/" + id;
+    }
+
+    @PostMapping("/orders/{id}/pay/fail")
+    public String failPayment(@AuthenticationPrincipal CustomerDetails customer, @PathVariable long id, RedirectAttributes redirect) {
+        try {
+            orders.failPayment(customer.getUserId(), id);
+            redirect.addFlashAttribute("error", "已模拟支付失败；订单仍待付款，库存和支付凭证未改变，可再次尝试。");
+        } catch (BusinessException exception) { redirect.addFlashAttribute("error", exception.getMessage()); }
+        return "redirect:/orders/" + id + "/pay";
     }
 
     @PostMapping("/orders/{id}/cancel")

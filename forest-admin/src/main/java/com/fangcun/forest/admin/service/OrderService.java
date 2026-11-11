@@ -26,9 +26,9 @@ public class OrderService {
         this.orders = orders; this.items = items; this.users = users; this.products = products;
     }
     public Page<SalesOrder> search(String orderNo, Long userId, OrderStatus status, PageRequest page) {
-        String term = QueryTerms.escape(orderNo, 40);
+        String term = QueryParameters.text(orderNo, 40, "订单号");
         return orders.selectPage(new Page<>(page.page(), page.size()), new LambdaQueryWrapper<SalesOrder>()
-            .like(!term.isEmpty(), SalesOrder::getOrderNo, term).eq(userId != null, SalesOrder::getUserId, userId)
+            .eq(!term.isEmpty(), SalesOrder::getOrderNo, term).eq(userId != null, SalesOrder::getUserId, userId)
             .eq(status != null, SalesOrder::getStatus, status).orderByDesc(SalesOrder::getCreatedAt, SalesOrder::getId));
     }
     public SalesOrder get(long id) {
@@ -50,7 +50,9 @@ public class OrderService {
     @Transactional
     @AdminAction("order.ship")
     public void ship(long id, int expected) {
-        SalesOrder order = lock(id, expected);
+        SalesOrder order = lockCurrent(id);
+        if (order.getStatus() == OrderStatus.SHIPPED || order.getStatus() == OrderStatus.COMPLETED) return;
+        if (order.getVersion() != expected) throw conflict("订单已在其他页面更新，请刷新后重试。");
         if (order.getStatus() != OrderStatus.PAID) throw conflict("只有已付款订单可以发货。");
         if (orders.update(null, version(order).eq(SalesOrder::getStatus, OrderStatus.PAID)
             .set(SalesOrder::getStatus, OrderStatus.SHIPPED).set(SalesOrder::getShippedAt, LocalDateTime.now())) != 1) throw conflict("订单已变化，请刷新。");
@@ -77,12 +79,16 @@ public class OrderService {
             .eq(SalesOrder::getVersion, order.getVersion()).eq(SalesOrder::getStatus, OrderStatus.CANCELLED)) != 1) throw conflict("订单已变化，请刷新。");
     }
     private SalesOrder lock(long id, int expected) {
+        SalesOrder order = lockCurrent(id);
+        if (order.getVersion() != expected) throw conflict("订单已在其他页面更新，请刷新后重试。");
+        return order;
+    }
+    private SalesOrder lockCurrent(long id) {
         SalesOrder initial = get(id);
         // Match storefront's lock order: user -> order -> product IDs ascending.
         if (users.lockById(initial.getUserId()) == null) throw missing();
         SalesOrder order = orders.lockById(id);
         if (order == null) throw missing();
-        if (order.getVersion() != expected) throw conflict("订单已在其他页面更新，请刷新后重试。");
         return order;
     }
     private LambdaUpdateWrapper<SalesOrder> version(SalesOrder order) {

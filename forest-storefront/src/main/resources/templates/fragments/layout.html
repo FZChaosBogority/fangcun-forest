@@ -8,7 +8,7 @@
       <span>方寸森林<small>FANGCUN FOREST</small></span></a>
     <nav aria-label="主导航">
       <a th:href="@{/main}">首页</a><a th:href="@{/category}">探索补给</a>
-      <a th:href="${currentAccount == null} ? @{/login(returnTo='/cart')} : @{/cart}">购物车</a><a th:href="${currentAccount == null} ? @{/login(returnTo='/orders')} : @{/orders}">我的订单</a>
+      <a aria-label="购物车" th:href="${currentAccount == null} ? @{/login(returnTo='/cart')} : @{/cart}">购物车 <span class="cart-count" data-cart-quantity th:text="${cartQuantity}">0</span></a><a th:href="${currentAccount == null} ? @{/login(returnTo='/orders')} : @{/orders}">我的订单</a>
       <a th:if="${currentAccount == null}" th:href="@{/login}">账号登录</a>
       <span class="nav-guest" th:if="${currentAccount == null}">游客</span>
     </nav>

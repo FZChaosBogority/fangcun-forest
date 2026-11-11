@@ -3,7 +3,7 @@
   <div class="page-heading"><a class="text-link" th:href="@{/products}">← 商品管理</a><h1 th:text="${id == null ? '新增生态补给' : '编辑生态补给'}"></h1><p class="muted">商品资料与库存分别维护，历史订单保留成交快照。</p></div>
   <div class="admin-detail-grid"><form class="panel admin-form" th:object="${form}" th:action="${id == null} ? @{/products/new} : @{/products/{id}/edit(id=${id})}" method="post" data-once-submit>
     <div th:replace="~{fragments/layout :: errors}"></div><input type="hidden" th:field="*{version}">
-    <div class="form-grid"><div class="admin-field"><label for="sku">商品 SKU</label><input id="sku" th:field="*{sku}" required maxlength="40" pattern="[A-Za-z0-9][A-Za-z0-9_-]{1,39}"></div>
+    <div class="form-grid"><div class="admin-field"><label for="sku">商品 SKU</label><input id="sku" th:field="*{sku}" required maxlength="40" pattern="[A-Za-z0-9][A-Za-z0-9_-]{0,39}" th:readonly="${id != null}"><small class="muted">SKU 创建后固定。</small></div>
       <div class="admin-field"><label for="categoryId">二级分类</label><select id="categoryId" th:field="*{categoryId}" required><option value="">请选择</option><option th:each="category : ${categories}" th:value="${category.id}" th:text="|${category.name} (#${category.id})|"></option></select></div>
       <div class="admin-field full-field"><label for="name">商品名称</label><input id="name" th:field="*{name}" required maxlength="120"></div>
       <div class="admin-field"><label for="price">销售单价（元）</label><input id="price" th:field="*{price}" type="number" min="0.01" max="9999999999.99" step="0.01" required></div><div class="admin-field"><label for="sortOrder">显示排序</label><input id="sortOrder" th:field="*{sortOrder}" type="number" min="0" max="1000000" required></div>

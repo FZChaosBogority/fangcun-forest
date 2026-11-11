@@ -11,6 +11,7 @@ import com.fangcun.forest.admin.mapper.*;
 import com.fangcun.forest.admin.web.ProductForm;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -64,8 +65,9 @@ public class ProductService {
     public void update(long id, ProductForm form) {
         leaf(form.getCategoryId()); List<String> gallery = validateImages(form);
         Product product = lock(id, form.getVersion());
+        if (!Objects.equals(product.getSku(), form.getSku())) throw conflict("SKU 创建后不可修改。");
         try {
-            int count = products.update(null, version(product).set(Product::getSku, form.getSku())
+            int count = products.update(null, version(product)
                 .set(Product::getCategoryId, form.getCategoryId()).set(Product::getName, form.getName().strip())
                 .set(Product::getSummary, form.getSummary()).set(Product::getDescription, form.getDescription())
                 .set(Product::getCoverImage, form.getCoverImage()).set(Product::getPrice, form.getPrice())
@@ -86,9 +88,10 @@ public class ProductService {
     }
     @Transactional
     @AdminAction("product.restock")
-    public void restock(long id, int expected, int quantity) {
+    public void restock(long id, int quantity) {
         if (quantity < 1 || quantity > 1000000) throw conflict("补货数量须为 1—1000000。");
-        Product product = lock(id, expected);
+        Product product = products.lockById(id);
+        if (product == null) throw missing("商品不存在。");
         if (products.restock(id, quantity, product.getVersion()) != 1) throw conflict("库存超出上限或商品已变化。");
     }
     @Transactional

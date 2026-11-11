@@ -9,7 +9,8 @@
   <div class="page-heading"><p class="eyebrow">ONE STEP CLOSER TO GREEN</p><h1>模拟支付</h1></div>
   <section class="panel payment-panel"><span class="status-badge" th:text="${order.status.label}"></span><p class="order-number muted" th:text="${order.orderNo}"></p><p>订单金额</p><strong class="price large" th:text="|¥${#numbers.formatDecimal(order.totalAmount, 1, 2)}|"></strong>
     <div class="notice"><strong>教学模拟支付 · 不会真实扣款</strong><p>确认后将订单标记为已付款，无需微信、支付宝或银行卡。</p></div>
-    <form th:if="${order.status.name() == 'PENDING_PAYMENT'}" th:action="@{/orders/{id}/pay(id=${order.id})}" method="post" data-once-submit><label class="check-label"><input type="checkbox" name="confirmed" value="true" required>我已了解这是模拟支付</label><button class="button full-button" type="submit">确认模拟支付</button></form>
+    <form th:if="${order.status.name() == 'PENDING_PAYMENT'}" th:action="@{/orders/{id}/pay(id=${order.id})}" method="post" data-once-submit><label class="check-label"><input type="checkbox" name="confirmed" value="true" required>我已了解这是模拟支付</label><button class="button full-button" type="submit">模拟支付成功</button></form>
+    <form th:if="${order.status.name() == 'PENDING_PAYMENT'}" th:action="@{/orders/{id}/pay/fail(id=${order.id})}" method="post" data-once-submit><button class="button secondary full-button" type="submit">模拟支付失败</button><p class="fine-print muted">失败后保留待付款状态，不生成成功凭证，不再次扣库存。</p></form>
     <p th:unless="${order.status.name() == 'PENDING_PAYMENT'}">当前订单无需支付，请查看订单详情。</p><a class="text-link" th:href="@{/orders/{id}(id=${order.id})}">返回订单详情 →</a>
   </section>
 </main><footer th:replace="~{fragments/layout :: footer}"></footer></body></html>

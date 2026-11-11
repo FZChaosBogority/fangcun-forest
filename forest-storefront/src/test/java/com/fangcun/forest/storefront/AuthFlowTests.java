@@ -62,6 +62,8 @@ class AuthFlowTests {
     private CaptchaService captchas;
     @MockitoBean
     private RegistrationService registrations;
+    @MockitoBean
+    private com.fangcun.forest.storefront.service.CartService carts;
 
     private StoreUser account;
 

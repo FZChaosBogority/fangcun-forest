@@ -4,6 +4,61 @@
 
 **Maven 构建、测试和应用启动由你执行。** 数据库初始化可使用下文的本机交互脚本；文中的预期结果不代表业务验收已经通过。
 
+## 页面展示
+
+以下为当前页面模板与本地资源在 Edge 中生成的**静态预览截图**，使用虚构演示数据；不代表真实 Spring Boot 运行、登录或数据库事务验收已经通过。桌面截图以 1440px 宽为主，另有 390px 窄屏展示。[截图说明与目录](docs/screenshots/README.md)
+
+![商城首页与盆栽少女展示图](docs/screenshots/storefront-home.png)
+
+<details>
+<summary>欢迎页与账号登录</summary>
+
+![森林欢迎页](docs/screenshots/welcome.png)
+
+![商城账号与图片验证码登录](docs/screenshots/login.png)
+
+</details>
+
+<details>
+<summary>新品精选、商品分类与详情</summary>
+
+![新品上架与精选推荐](docs/screenshots/home-collections.png)
+
+![两级分类和商品列表](docs/screenshots/catalog.png)
+
+![商品详情与相册](docs/screenshots/product-detail.png)
+
+</details>
+
+<details>
+<summary>整车结算、订单搜索与模拟支付</summary>
+
+![整车购物车](docs/screenshots/cart.png)
+
+![失效商品阻止整车结算](docs/screenshots/cart-invalid.png)
+
+![本人完整订单号查询](docs/screenshots/orders.png)
+
+![显式模拟支付成功与失败](docs/screenshots/mock-payment.png)
+
+</details>
+
+<details>
+<summary>后台管理工作台与商品维护</summary>
+
+![后台概览](docs/screenshots/admin-dashboard.png)
+
+![后台商品管理](docs/screenshots/admin-products.png)
+
+</details>
+
+<details>
+<summary>手机布局</summary>
+
+<img src="docs/screenshots/storefront-mobile.png" alt="390px 手机宽度的商城首页" width="320">
+
+</details>
+
 ## 工程与技术栈
 
 | 项目 | 内容 |
@@ -21,13 +76,13 @@
 
 ## 当前已提供的代码
 
-- 用户端商品：左右分栏欢迎页、首页搜索、两级分类筛选、名称搜索、价格/时间排序、有货筛选、数据库分页、商品详情及相册切换；下架商品不展示，零库存显示售罄。
+- 用户端商品：左右分栏欢迎页、首页新品最多 3 件/精选最多 4 件、两级分类筛选、名称搜索、价格/时间排序、有货筛选、数据库分页、商品详情及相册切换；下架商品不展示，零库存显示售罄。
 - 用户端账号：注册、登录、退出、个人入口，BCrypt 密码散列与两分钟有效的一次性图片验证码。
-- 用户端交易：持久化购物车、数量修改和移除、勾选结算、收货信息、事务下单、订单列表和详情、取消归还库存、模拟支付、已发货订单确认收货。
+- 用户端交易：持久化购物车与真实数量徽标、数量修改和移除、整车结算、收货信息、原子下单、完整订单号精确搜索与状态分页、取消归还库存、显式模拟支付成功/失败、已发货订单确认收货。
 - 管理端：ADMIN 身份隔离、实时统计、两级分类增删改查、商品增删改查/上下架/相册/增量补货、商城用户资料和状态维护/密码重置、订单查询/收货信息编辑/取消/删除已取消订单/发货。
 - 两端：七张表的实体与 Mapper、MVC 分层、统一错误页、数据源及独立 Session Cookie 配置。
 - 数据库：七张表结构草案、12 个分类、9 件商品、2 条图片记录及独立的教学商城账号与管理员账号，包含零库存和下架样例。
-- 页面资源：本地 CSS、森林图片、用户选定的盆栽少女 PNG 图标与商品 SVG 示意图，不依赖 CDN。
+- 页面资源：本地 CSS、三种森林欢迎背景、盆栽少女 PNG 图标、首页写实展示和 9 件独立商品图片，不依赖 CDN。
 
 用户端交易金额由服务器计算，购物车与订单按当前账号隔离；管理端写操作要求 ADMIN 和 CSRF。模拟支付不接真实资金。代码已提供，构建、业务运行、事务回滚与跨工程并发效果仍须用户验证。
 
@@ -65,7 +120,10 @@ MyStore/
 │   └── 05-product-images.sql # 将原始商品占位图换为独立展示图
 └── docs/
     ├── architecture.md
-    └── manual-checklist.md
+    ├── manual-checklist.md
+    ├── requirements.md
+    ├── verification.md
+    └── screenshots/             # 仅界面演示截图
 ```
 
 ## 1 准备数据库
@@ -173,11 +231,11 @@ Windows 使用 `.\mvnw.cmd` 替代 `mvn`；macOS / Linux 使用 `sh ./mvnw`。�
 | `http://localhost:8080/login` | 商城账号表单，支持登录失败与退出提示 |
 | `http://localhost:8080/register` | 创建商城账号，带图片验证码 |
 | `http://localhost:8080/account` | 当前账号入口 |
-| `http://localhost:8080/main` | 商城首页，读取分类和最多 4 件精选商品 |
+| `http://localhost:8080/main` | 商城首页，读取两级分类、新品最多 3 件和精选最多 4 件 |
 | `http://localhost:8080/category` | 商品列表，支持 `categoryId`、`keyword`、`page`、`size` |
 | `http://localhost:8080/product?id=1` | 商品详情 |
-| `http://localhost:8080/cart` | 账号购物车与勾选结算 |
-| `http://localhost:8080/orders` | 当前账号订单列表 |
+| `http://localhost:8080/cart` | 账号购物车与整车结算；任一失效条目阻止结算 |
+| `http://localhost:8080/orders` | 本人订单；支持完整订单号、五状态和 1—50 件分页，默认 10 件 |
 | `http://localhost:8080/orders/{id}` | 订单详情、支付、取消与确认收货入口 |
 | `http://localhost:8081/` | 管理概览，要求管理员登录 |
 | `http://localhost:8081/products` | 全部商品分页，含下架商品 |
@@ -186,15 +244,20 @@ Windows 使用 `.\mvnw.cmd` 替代 `mvn`；macOS / Linux 使用 `sh ./mvnw`。�
 | `http://localhost:8081/orders` | 订单处理与发货 |
 | 两端的 `/actuator/health` | 健康检查，含数据库连接检查；不公开详细连接配置 |
 
-首次按 01—04 导入后的预期：分类 12 个（一级 4 个、二级 8 个），商品 9 件，其中上架 8 件，普通教学账号和管理员各 1 个，订单 0 张；用户端默认每页 6 件，商品 6 为零库存样例，商品 9 为下架样例。用户端不显示商品 9，直接请求详情应返回 404。重启后数据应保留。
+首次按 01—05 导入后的预期：分类 12 个（一级 4 个、二级 8 个），商品 9 件，其中上架 8 件，普通教学账号和管理员各 1 个，订单 0 张；用户端默认每页 6 件，商品 6 为零库存样例，商品 9 为下架样例。用户端不显示商品 9，直接请求详情应返回 404。重启后数据应保留。
 
 完整的手工检查步骤见 [基础检查清单](docs/manual-checklist.md)。AOP 日志形如 `service=CatalogServiceImpl.findProducts(..) success=true elapsedMs=...`，不记录用户参数或响应数据。
 
-## 后续开发顺序
+## 提交前验收
 
-1. 由用户构建、启动并验证完整购买流程，记录真实事务回滚与并发结果。
-2. 验证管理员登录、分类/商品写操作、增量补货、发货和双端身份隔离。
-3. 核对课程 SQL 与更换主题后的 P0 范围，完成实验报告。
+源码、SQL、运行说明与界面资源已提供。需求和代码对应见 [需求清单](docs/requirements.md)，已做的静态检查和待执行的真实业务场景见 [验证记录](docs/verification.md)。
+
+- [ ] 两个工程分别执行 clean package 并通过各自测试，再同时启动。
+- [ ] 实测注册/验证码/登录、整车下单、失败再成功支付、取消恢复库存、后台发货与收货。
+- [ ] 实测普通用户/管理员/跨账号权限、旧结算确认、事务回滚、重复操作与双端购买/补货并发。
+- [ ] 按本主题 SQL 复现，确认课程分组表登记的 Git 链接与提交仓库一致。
+
+**只有真实运行验收通过，才能将课程项目记为完成。** 实验报告和个人信息仅在本机保存，不纳入 GitHub；仓库中不提供报告模板。构建、测试和应用启动仍由使用者执行，不能将静态截图当作业务通过证据。
 
 真实支付、邮件/短信验证码、找回密码、优惠券和物流轨迹不在本次实现范围内。待付款订单目前由用户主动取消，没有自动超时释放库存。详见 [架构与实现边界](docs/architecture.md)。
 

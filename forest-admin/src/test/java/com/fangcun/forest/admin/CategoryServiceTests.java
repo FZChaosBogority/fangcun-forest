@@ -35,4 +35,10 @@ class CategoryServiceTests {
         Category root = category(1,null); when(categories.lockTree()).thenReturn(List.of(root)); CategoryForm form = new CategoryForm(); form.setRevision("old");
         assertThrows(BusinessException.class, () -> service.update(1,form)); verify(categories, never()).update(any(),any());
     }
+    @Test void forgedParentOrCodeCannotMoveAnExistingCategory() {
+        Category root = category(1,null); when(categories.lockTree()).thenReturn(List.of(root));
+        CategoryForm form = CategoryForm.from(root,CategoryService.revision(root)); form.setParentId(9L);
+        assertThrows(BusinessException.class, () -> service.update(1,form));
+        verify(categories,never()).update(any(),any());
+    }
 }

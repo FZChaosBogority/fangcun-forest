@@ -46,7 +46,6 @@
     <h2>细节一览</h2><div class="gallery"><img th:each="image : ${images}" th:src="${image.imagePath}"
       th:alt="${image.altText ?: product.name}" loading="lazy" width="480" height="360"></div>
   </section>
-  <section th:if="${!#lists.isEmpty(related)}"><h2>同类小小绿意</h2><div th:replace="~{fragments/layout :: cards(${related})}"></div></section>
 </main>
 <footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>

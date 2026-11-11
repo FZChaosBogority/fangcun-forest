@@ -34,6 +34,10 @@ class OrderServiceTests {
     @Test void staleVersionCannotShipAnOrder() {
         order(OrderStatus.PAID); assertThrows(BusinessException.class,()->service.ship(1,1)); verify(orders,never()).update(any(),any());
     }
+    @Test void repeatedShipmentKeepsTheFirstStateAndDoesNotWriteOrDeductAgain() {
+        order(OrderStatus.SHIPPED); service.ship(1,1);
+        verify(orders,never()).update(any(),any()); verifyNoInteractions(products);
+    }
     @Test void cancellingAnAlreadyCancelledOrderNeverRestoresTwice() {
         order(OrderStatus.CANCELLED); service.cancel(1,2); verifyNoInteractions(products,items);
     }

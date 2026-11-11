@@ -52,10 +52,9 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public List<Product> findRelatedProducts(Product product) {
+    public List<Product> findNewestProducts() {
         return productMapper.selectPage(new Page<Product>(1, 3, false), onSaleQuery()
-                .eq(Product::getCategoryId, product.getCategoryId()).ne(Product::getId, product.getId())
-                .orderByAsc(Product::getSortOrder, Product::getId)).getRecords();
+                .orderByDesc(Product::getCreatedAt, Product::getId)).getRecords();
     }
 
     @Override

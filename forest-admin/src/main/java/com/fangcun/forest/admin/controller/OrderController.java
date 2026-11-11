@@ -20,10 +20,12 @@ public class OrderController {
     public OrderController(OrderService orders, UserService users) { this.orders = orders; this.users = users; }
     @GetMapping
     public String list(@RequestParam(defaultValue = "") String orderNo, @RequestParam(required = false) Long userId,
-            @RequestParam(required = false) OrderStatus status, @RequestParam(defaultValue = "1") long page, Model model) {
-        model.addAttribute("result", orders.search(orderNo, userId, status, new PageRequest(page, 10)));
+            @RequestParam(defaultValue = "ALL") String status, @RequestParam(defaultValue = "1") long page,
+            @RequestParam(defaultValue = "10") long size, Model model) {
+        OrderStatus selected = QueryParameters.optionalEnum(OrderStatus.class, status);
+        model.addAttribute("result", orders.search(orderNo, userId, selected, new PageRequest(page, size)));
         model.addAttribute("orderNo", orderNo.strip()); model.addAttribute("userId", userId);
-        model.addAttribute("status", status); model.addAttribute("statuses", OrderStatus.values()); return "orders/list";
+        model.addAttribute("status", selected); model.addAttribute("statuses", OrderStatus.values()); return "orders/list";
     }
     @GetMapping("/{id}")
     public String detail(@PathVariable long id, Model model) { model.addAttribute("form", OrderEditForm.from(orders.get(id))); return data(id, model); }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import java.util.stream.Collectors;
 
 @Controller
 public class CatalogController {
@@ -20,8 +21,12 @@ public class CatalogController {
 
     @GetMapping("/main")
     public String home(Model model) {
-        model.addAttribute("categories", catalogService.findRootCategories());
+        var categories = catalogService.findAllCategories();
+        model.addAttribute("categories", categories.stream().filter(c -> c.getParentId() == null).toList());
+        model.addAttribute("categoryGroups", categories.stream().filter(c -> c.getParentId() != null)
+                .collect(Collectors.groupingBy(com.fangcun.forest.storefront.entity.Category::getParentId)));
         model.addAttribute("products", catalogService.findFeaturedProducts());
+        model.addAttribute("newest", catalogService.findNewestProducts());
         return "catalog/home";
     }
 
@@ -36,7 +41,11 @@ public class CatalogController {
             Model model) {
         model.addAttribute("result",
                 catalogService.findProducts(categoryId, keyword, sort, inStock, new PageRequest(page, size)));
-        model.addAttribute("categories", catalogService.findAllCategories());
+        var categories = catalogService.findAllCategories();
+        model.addAttribute("categories", categories);
+        model.addAttribute("rootCategories", categories.stream().filter(c -> c.getParentId() == null).toList());
+        model.addAttribute("categoryGroups", categories.stream().filter(c -> c.getParentId() != null)
+                .collect(Collectors.groupingBy(com.fangcun.forest.storefront.entity.Category::getParentId)));
         model.addAttribute("sort", sort); model.addAttribute("sorts", ProductSort.values());
         model.addAttribute("inStock", inStock);
         model.addAttribute("categoryId", categoryId);
@@ -51,7 +60,6 @@ public class CatalogController {
         model.addAttribute("logoutReturnTo", "/product?id=" + id);
         model.addAttribute("category", catalogService.getCategory(product.getCategoryId()));
         model.addAttribute("images", catalogService.findImages(id));
-        model.addAttribute("related", catalogService.findRelatedProducts(product));
         return "catalog/detail";
     }
 }

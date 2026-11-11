@@ -53,6 +53,11 @@ public class CartService {
         return new CartView(List.copyOf(lines), total, quantity);
     }
 
+    public int quantity(long userId) {
+        return carts.selectList(new LambdaQueryWrapper<CartItem>().eq(CartItem::getUserId, userId))
+                .stream().mapToInt(CartItem::getQuantity).sum();
+    }
+
     @Transactional
     public void add(long userId, long productId, int quantity) {
         validateQuantity(quantity);

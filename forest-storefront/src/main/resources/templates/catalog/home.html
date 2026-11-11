@@ -26,13 +26,20 @@
   <section aria-labelledby="categories-heading">
     <div class="section-heading" data-store-reveal><h2 id="categories-heading">从这里开始</h2><span>为每一寸绿意找到补给</span></div>
     <div class="category-links">
-      <a th:each="category : ${categories}" th:href="@{/category(categoryId=${category.id})}" data-store-reveal
-         th:text="${category.name}">分类</a>
+      <div th:each="category : ${categories}" class="category-group" data-store-reveal>
+        <a class="category-root" th:href="@{/category(categoryId=${category.id})}" th:text="${category.name}">分类</a>
+        <div class="category-children"><a th:each="child : ${categoryGroups[category.id]}" th:href="@{/category(categoryId=${child.id})}" th:text="${child.name}">商品类型</a></div>
+      </div>
     </div>
     <p class="empty-state" th:if="${#lists.isEmpty(categories)}" data-store-reveal>暂无商品分类。</p>
   </section>
+  <section aria-labelledby="newest-heading">
+    <div class="section-heading" data-store-reveal><h2 id="newest-heading">新品上架</h2><a th:href="@{/category}">查看全部 →</a></div>
+    <div th:replace="~{fragments/layout :: cards(${newest})}"></div>
+    <p class="empty-state" th:if="${#lists.isEmpty(newest)}" data-store-reveal>暂无上架新品，稍后再来看看。</p>
+  </section>
   <section aria-labelledby="featured-heading">
-    <div class="section-heading" data-store-reveal><h2 id="featured-heading">精选生态补给</h2><a th:href="@{/category}">查看全部 →</a></div>
+    <div class="section-heading" data-store-reveal><h2 id="featured-heading">精选推荐</h2><a th:href="@{/category}">查看全部 →</a></div>
     <div th:replace="~{fragments/layout :: cards(${products})}"></div>
     <p class="empty-state" th:if="${#lists.isEmpty(products)}" data-store-reveal>暂无上架商品，稍后再来看看。</p>
   </section>

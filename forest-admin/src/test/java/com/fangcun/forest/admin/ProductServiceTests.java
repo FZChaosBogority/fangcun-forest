@@ -29,9 +29,10 @@ class ProductServiceTests {
         when(products.lockById(1)).thenReturn(product(ProductStatus.ON_SALE));
         assertThrows(BusinessException.class, () -> service.delete(1,2)); verify(products,never()).delete(any());
     }
-    @Test void staleVersionDoesNotRestockOrOverwriteInventory() {
+    @Test void restockUsesTheLatestLockedInventoryRatherThanAPageSnapshot() {
         when(products.lockById(1)).thenReturn(product(ProductStatus.ON_SALE));
-        assertThrows(BusinessException.class, () -> service.restock(1,1,10)); verify(products,never()).restock(anyLong(),anyInt(),anyInt());
+        when(products.restock(1,10,2)).thenReturn(1);
+        service.restock(1,10); verify(products).restock(1,10,2);
     }
     @Test void newlyCreatedProductIsDraftWithExplicitInitialStock() {
         Category leaf = new Category(); leaf.setId(11L); leaf.setParentId(1L); when(categories.lockById(11)).thenReturn(leaf);
@@ -39,5 +40,12 @@ class ProductServiceTests {
         doAnswer(call -> { ((Product)call.getArgument(0)).setId(20L); return 1; }).when(products).insert(any(Product.class));
         service.create(form); ArgumentCaptor<Product> saved = ArgumentCaptor.forClass(Product.class); verify(products).insert(saved.capture());
         assertEquals(ProductStatus.DRAFT,saved.getValue().getStatus()); assertEquals(7,saved.getValue().getStock());
+    }
+    @Test void forgedSkuEditCannotChangeProductIdentityOrReplaceItsGallery() {
+        Product existing=product(ProductStatus.ON_SALE); existing.setSku("FC-ORIGINAL"); when(products.lockById(1)).thenReturn(existing);
+        Category leaf=new Category(); leaf.setId(11L); leaf.setParentId(1L); when(categories.lockById(11)).thenReturn(leaf);
+        ProductForm form=new ProductForm(); form.setCategoryId(11L); form.setVersion(2); form.setSku("FC-CHANGED");
+        assertThrows(BusinessException.class,()->service.update(1,form));
+        verify(products,never()).update(any(),any()); verify(images,never()).delete(any());
     }
 }

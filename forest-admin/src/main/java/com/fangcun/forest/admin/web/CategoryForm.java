@@ -5,10 +5,10 @@ import com.fangcun.forest.admin.entity.Category;
 
 public class CategoryForm {
     @NotBlank(message = "请填写分类编码")
-    @Pattern(regexp = "[A-Z][A-Z0-9_]{1,39}", message = "分类编码为 2—40 位大写字母、数字或下划线")
+    @Pattern(regexp = "[A-Z][A-Z0-9_]{0,31}", message = "分类编码为 1—32 位大写字母、数字或下划线")
     private String code;
     @NotBlank(message = "请填写分类名称")
-    @Size(max = 80, message = "分类名称最多 80 个字符")
+    @Size(max = 50, message = "分类名称最多 50 个字符")
     private String name;
     private Long parentId;
     @NotNull(message = "请填写排序")

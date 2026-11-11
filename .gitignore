@@ -4,6 +4,10 @@
 *.log
 logs/
 .local/
+submission/
+reports/
+**/*实验*报告*
+**/*lab-report*
 
 # IDE
 .idea/

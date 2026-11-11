@@ -23,8 +23,9 @@ class OrderServiceTests {
     private final SalesOrderItemMapper items = mock(SalesOrderItemMapper.class);
     private final CartItemMapper carts = mock(CartItemMapper.class);
     private final ProductMapper products = mock(ProductMapper.class);
+    private final CartService cartService = mock(CartService.class);
     private final OrderService service = new OrderService(orders, items, carts, products,
-            mock(CartService.class), mock(CustomerLock.class));
+            cartService, mock(CustomerLock.class));
     private CheckoutDraft draft() {
         return new CheckoutDraft(7, "FCtest", Instant.now(), List.of(new CheckoutDraft.Line(10, 1, 2, 0,
                 new BigDecimal("89.00"), "旧名称", "/old.svg")));
@@ -36,6 +37,7 @@ class OrderServiceTests {
     private void productAndCart(String price) {
         CartItem item = new CartItem(); item.setId(10L); item.setProductId(1L); item.setQuantity(2); item.setVersion(0);
         when(carts.selectOne(any())).thenReturn(item);
+        when(carts.selectList(any())).thenReturn(List.of(item));
         Product product = new Product(); product.setId(1L); product.setName("当前名称"); product.setSku("FC-1");
         product.setCoverImage("/now.svg"); product.setPrice(new BigDecimal(price)); product.setStock(8);
         product.setStatus(ProductStatus.ON_SALE); product.setVersion(4); when(products.lockById(1)).thenReturn(product);
@@ -104,5 +106,47 @@ class OrderServiceTests {
     void missingOrForeignOrderIsNotReturned() {
         assertThrows(BusinessException.class, () -> service.owned(7, 99));
         verifyNoInteractions(items);
+    }
+
+    @Test
+    void addingAnotherCartItemAfterConfirmationRejectsTheEntireCheckout() {
+        productAndCart("89.00");
+        CartItem extra = new CartItem(); extra.setId(11L);
+        CartItem original = new CartItem(); original.setId(10L);
+        when(carts.selectList(any())).thenReturn(List.of(original, extra));
+        assertThrows(BusinessException.class, () -> service.place(7, draft(), shipping()));
+        verify(products, never()).reserve(anyLong(), anyInt(), anyInt());
+        verify(orders, never()).insert(any(SalesOrder.class));
+        verify(carts, never()).delete(any());
+    }
+
+    @Test
+    void simulatedFailureKeepsPaymentAndInventoryUntouched() {
+        SalesOrder order = new SalesOrder(); order.setStatus(OrderStatus.PENDING_PAYMENT);
+        when(orders.selectOne(any())).thenReturn(order);
+        service.failPayment(7, 8);
+        assertNull(order.getPaymentNo()); assertNull(order.getPaidAt());
+        assertEquals(OrderStatus.PENDING_PAYMENT, order.getStatus());
+        verify(orders, never()).update(any(), any()); verifyNoInteractions(products, carts, items);
+    }
+
+    @Test
+    void simulatedFailureRejectsAPaidOrForeignOrder() {
+        SalesOrder order = new SalesOrder(); order.setStatus(OrderStatus.PAID);
+        when(orders.selectOne(any())).thenReturn(order);
+        assertThrows(BusinessException.class, () -> service.failPayment(7, 8));
+        when(orders.selectOne(any())).thenReturn(null);
+        assertThrows(BusinessException.class, () -> service.failPayment(7, 8));
+        verify(orders, never()).update(any(), any());
+    }
+
+    @Test
+    void anInvalidItemBlocksTheWholeCartRatherThanSilentlySkippingIt() {
+        CartItem item = new CartItem(); item.setId(10L); item.setProductId(1L); item.setQuantity(2); item.setVersion(0);
+        Product product = new Product(); product.setId(1L); product.setPrice(new BigDecimal("89.00"));
+        var invalid = new com.fangcun.forest.storefront.web.CartView.Line(item, product, false, "库存不足");
+        when(cartService.view(7)).thenReturn(new com.fangcun.forest.storefront.web.CartView(List.of(invalid), new BigDecimal("178.00"), 2));
+        assertThrows(BusinessException.class, () -> service.prepare(7));
+        verifyNoInteractions(products, orders, carts, items);
     }
 }

@@ -17,10 +17,11 @@ public class UserController {
     private final UserService users;
     public UserController(UserService users) { this.users = users; }
     @GetMapping
-    public String list(@RequestParam(defaultValue = "") String keyword, @RequestParam(required = false) AccountStatus status,
-            @RequestParam(defaultValue = "1") long page, Model model) {
-        model.addAttribute("result", users.search(keyword, status, new PageRequest(page, 10)));
-        model.addAttribute("keyword", keyword.strip()); model.addAttribute("status", status); return "users/list";
+    public String list(@RequestParam(defaultValue = "") String keyword, @RequestParam(defaultValue = "ALL") String status,
+            @RequestParam(defaultValue = "1") long page, @RequestParam(defaultValue = "10") long size, Model model) {
+        AccountStatus selected = QueryParameters.optionalEnum(AccountStatus.class, status);
+        model.addAttribute("result", users.search(keyword, selected, new PageRequest(page, size)));
+        model.addAttribute("keyword", keyword.strip()); model.addAttribute("status", selected); return "users/list";
     }
     @GetMapping("/{id}")
     public String edit(@PathVariable long id, Model model) {

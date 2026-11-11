@@ -3,9 +3,9 @@
   <div class="page-heading"><a class="text-link" th:href="@{/categories}">← 分类管理</a><h1 th:text="${id == null ? '新增分类' : '编辑分类'}"></h1><p class="muted">一级分类承载主题，二级分类归集商品。</p></div>
   <form class="panel admin-form narrow-form" th:object="${form}" th:action="${id == null} ? @{/categories/new} : @{/categories/{id}/edit(id=${id})}" method="post" data-once-submit>
     <div th:replace="~{fragments/layout :: errors}"></div><input type="hidden" th:field="*{revision}">
-    <div class="admin-field"><label for="code">分类编码</label><input id="code" th:field="*{code}" required pattern="[A-Z][A-Z0-9_]{1,39}" maxlength="40" placeholder="例如 MINI_GARDENS"></div>
-    <div class="admin-field"><label for="name">分类名称</label><input id="name" th:field="*{name}" required maxlength="80"></div>
-    <div class="admin-field"><label for="parentId">所属一级分类</label><select id="parentId" th:field="*{parentId}"><option value="">无（创建一级分类）</option><option th:each="parent : ${parents}" th:value="${parent.id}" th:text="${parent.name}"></option></select></div>
+    <div class="admin-field"><label for="code">分类编码</label><input id="code" th:field="*{code}" required pattern="[A-Z][A-Z0-9_]{0,31}" maxlength="32" th:readonly="${id != null}" placeholder="例如 MINI_GARDENS"></div>
+    <div class="admin-field"><label for="name">分类名称</label><input id="name" th:field="*{name}" required maxlength="50"></div>
+    <div class="admin-field"><label for="parentId">所属一级分类</label><select id="parentId" th:field="*{parentId}" th:disabled="${id != null}"><option value="">无（创建一级分类）</option><option th:each="parent : ${parents}" th:value="${parent.id}" th:text="${parent.name}"></option></select><input th:if="${id != null}" type="hidden" name="parentId" th:value="${form.parentId}"><small class="muted">编码与父子关系创建后固定。</small></div>
     <div class="admin-field"><label for="sortOrder">显示排序</label><input id="sortOrder" th:field="*{sortOrder}" type="number" min="0" max="1000000" required></div><button class="button" type="submit">保存分类</button>
   </form>
 </main><footer th:replace="~{fragments/layout :: footer}"></footer></body></html>

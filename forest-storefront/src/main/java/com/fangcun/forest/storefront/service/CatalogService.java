@@ -13,8 +13,8 @@ public interface CatalogService {
     List<Category> findRootCategories();
     List<Category> findAllCategories();
     List<Product> findFeaturedProducts();
+    List<Product> findNewestProducts();
     Page<Product> findProducts(Long categoryId, String keyword, ProductSort sort, boolean inStock, PageRequest request);
-    List<Product> findRelatedProducts(Product product);
     Product getOnSaleProduct(long id);
     Category getCategory(long id);
     List<ProductImage> findImages(long productId);

@@ -6,7 +6,7 @@ import com.fangcun.forest.admin.entity.Product;
 
 public class ProductForm {
     @NotBlank(message = "请填写 SKU")
-    @Pattern(regexp = "[A-Za-z0-9][A-Za-z0-9_-]{1,39}", message = "SKU 为 2—40 位字母、数字、下划线或横线")
+    @Pattern(regexp = "[A-Za-z0-9][A-Za-z0-9_-]{0,39}", message = "SKU 为 1—40 位字母、数字、下划线或横线")
     private String sku;
     @NotNull(message = "请选择二级分类")
     private Long categoryId;

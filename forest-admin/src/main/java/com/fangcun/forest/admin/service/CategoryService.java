@@ -12,6 +12,7 @@ import com.fangcun.forest.admin.mapper.ProductMapper;
 import com.fangcun.forest.admin.web.CategoryForm;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,9 @@ public class CategoryService {
         Category category = tree.stream().filter(item -> item.getId() == id).findFirst()
                 .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "分类不存在。"));
         if (!revision(category).equals(form.getRevision())) throw conflict("分类已被修改，请刷新后重试。");
+        if (!Objects.equals(category.getCode(), form.getCode()) || !Objects.equals(category.getParentId(), form.getParentId())) {
+            throw conflict("分类编码和父子关系创建后不可修改；只能维护名称与排序。");
+        }
         validateParent(id, form.getParentId());
         if (form.getParentId() != null && tree.stream().anyMatch(item -> Long.valueOf(id).equals(item.getParentId()))) {
             throw conflict("有子分类的一级分类不能改为二级分类。");
@@ -58,8 +62,7 @@ public class CategoryService {
         }
         try {
             if (categories.update(null, new LambdaUpdateWrapper<Category>().eq(Category::getId, id)
-                    .set(Category::getCode, form.getCode()).set(Category::getName, form.getName().strip())
-                    .set(Category::getParentId, form.getParentId()).set(Category::getSortOrder, form.getSortOrder())
+                    .set(Category::getName, form.getName().strip()).set(Category::getSortOrder, form.getSortOrder())
                     .set(Category::getUpdatedAt, LocalDateTime.now())) != 1) throw conflict("分类已变化，请重试。");
         } catch (DuplicateKeyException exception) { throw conflict("分类编码或同级分类名称已存在。"); }
     }

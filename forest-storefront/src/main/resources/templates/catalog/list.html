@@ -12,6 +12,7 @@
 <header th:replace="~{fragments/layout :: header}"></header>
 <main class="container">
   <div class="page-heading"><p class="eyebrow">EXPLORE THE LITTLE WORLD</p><h1>探索生态补给</h1></div>
+  <div class="catalog-layout"><aside class="catalog-sidebar" aria-label="分类导航"><h2>发现绿意</h2><a th:href="@{/category(keyword=${keyword},sort=${sort},inStock=${inStock},size=${result.size})}">全部补给</a><div th:each="rootCategory : ${rootCategories}"><a class="category-root" th:href="@{/category(categoryId=${rootCategory.id},keyword=${keyword},sort=${sort},inStock=${inStock},size=${result.size})}" th:text="${rootCategory.name}">一级分类</a><a class="category-child" th:each="child : ${categoryGroups[rootCategory.id]}" th:href="@{/category(categoryId=${child.id},keyword=${keyword},sort=${sort},inStock=${inStock},size=${result.size})}" th:text="${child.name}" th:classappend="${child.id == categoryId} ? 'active'">二级分类</a></div></aside><section class="catalog-results" aria-label="商品列表">
   <form class="search-bar" method="get" th:action="@{/category}">
     <label for="categoryId">商品分类</label>
     <select id="categoryId" name="categoryId">
@@ -39,6 +40,7 @@
     <span th:text="|第 ${result.current} 页 · 共 ${result.pages} 页|"></span>
     <a th:if="${result.current < result.pages}" th:href="@{/category(categoryId=${categoryId},keyword=${keyword},sort=${sort},inStock=${inStock},page=${result.current + 1},size=${result.size})}">下一页</a>
   </nav>
+  </section></div>
 </main>
 <footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>

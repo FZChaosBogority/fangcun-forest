@@ -22,11 +22,12 @@ public class ProductController {
     public ProductController(ProductService products, CategoryService categories) { this.products = products; this.categories = categories; }
     @GetMapping
     public String list(@RequestParam(defaultValue = "") String keyword, @RequestParam(required = false) Long categoryId,
-            @RequestParam(required = false) ProductStatus status, @RequestParam(defaultValue = "1") long page,
+            @RequestParam(defaultValue = "ALL") String status, @RequestParam(defaultValue = "1") long page,
             @RequestParam(defaultValue = "10") long size, Model model) {
-        model.addAttribute("result", products.search(keyword, categoryId, status, new PageRequest(page, size)));
+        ProductStatus selected = QueryParameters.optionalEnum(ProductStatus.class, status);
+        model.addAttribute("result", products.search(keyword, categoryId, selected, new PageRequest(page, size)));
         model.addAttribute("categories", categories.all()); model.addAttribute("keyword", keyword.strip());
-        model.addAttribute("categoryId", categoryId); model.addAttribute("status", status); return "overview/products";
+        model.addAttribute("categoryId", categoryId); model.addAttribute("status", selected); return "overview/products";
     }
     @GetMapping("/new") public String create(Model model) { model.addAttribute("form", new ProductForm()); return form(null, model); }
     @GetMapping("/{id}/edit") public String edit(@PathVariable long id, Model model) {
@@ -52,8 +53,8 @@ public class ProductController {
         return "redirect:/products/" + id + "/edit";
     }
     @PostMapping("/{id}/restock")
-    public String restock(@PathVariable long id, @RequestParam int version, @RequestParam int quantity, RedirectAttributes redirect) {
-        try { products.restock(id, version, quantity); redirect.addFlashAttribute("success", "补货已完成。"); }
+    public String restock(@PathVariable long id, @RequestParam int quantity, RedirectAttributes redirect) {
+        try { products.restock(id, quantity); redirect.addFlashAttribute("success", "补货已完成。"); }
         catch (BusinessException exception) { redirect.addFlashAttribute("error", exception.getMessage()); }
         return "redirect:/products/" + id + "/edit";
     }
