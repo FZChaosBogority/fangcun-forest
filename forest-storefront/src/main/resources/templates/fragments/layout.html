@@ -1,16 +1,36 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <body>
-<header th:fragment="header" class="site-header">
+<header th:fragment="header" class="site-header" data-store-reveal data-main-url="/main" th:data-main-url="@{/main}" th:data-guest="${currentAccount == null}">
+  <script defer src="/js/commerce.js" th:src="@{/js/commerce.js}"></script>
   <div class="container header-inner">
-    <a class="brand" th:href="@{/}"><span class="brand-mark" aria-hidden="true">森</span>
+    <a class="brand" th:href="@{/main}"><img class="brand-mascot" th:src="@{/images/forest-mascot.png}" width="48" height="48" alt="盆栽少女小树">
       <span>方寸森林<small>FANGCUN FOREST</small></span></a>
-    <nav aria-label="主导航"><a th:href="@{/}">首页</a><a th:href="@{/category}">探索补给</a></nav>
+    <nav aria-label="主导航">
+      <a th:href="@{/main}">首页</a><a th:href="@{/category}">探索补给</a>
+      <a th:href="${currentAccount == null} ? @{/login(returnTo='/cart')} : @{/cart}">购物车</a><a th:href="${currentAccount == null} ? @{/login(returnTo='/orders')} : @{/orders}">我的订单</a>
+      <a th:if="${currentAccount == null}" th:href="@{/login}">账号登录</a>
+      <span class="nav-guest" th:if="${currentAccount == null}">游客</span>
+    </nav>
+    <div class="nav-account" th:if="${currentAccount != null}">
+      <a th:href="@{/account}" th:text="${currentAccount.displayName}">森林旅人</a>
+      <form th:action="@{/logout}" method="post" data-logout-form>
+        <input type="hidden" name="returnTo" value="/main" th:value="${logoutReturnTo ?: '/main'}">
+        <button class="nav-logout" type="submit" data-logout-trigger aria-expanded="false" aria-controls="logout-popconfirm">退出登录</button>
+      </form>
+      <div id="logout-popconfirm" class="logout-popconfirm" data-logout-popconfirm role="dialog" aria-modal="false" aria-labelledby="logout-question" hidden>
+        <strong id="logout-question">退出当前账号？</strong><p>退出后仍可继续浏览商品。</p>
+        <p class="field-error" data-logout-error role="alert" hidden></p>
+        <div class="popconfirm-actions"><button class="small-button" type="button" data-logout-cancel>取消</button><button class="small-button popconfirm-confirm" type="button" data-logout-confirm>确认退出</button></div>
+      </div>
+    </div>
   </div>
+  <div class="container"><p class="notice" role="status" th:if="${success != null}" th:text="${success}"></p>
+    <p class="notice error-notice" role="alert" th:if="${error != null}" th:text="${error}"></p></div>
 </header>
-<footer th:fragment="footer" class="site-footer container">方寸之间，种下一片森林。 · 桌面生态补给站</footer>
+<footer th:fragment="footer" class="site-footer container" data-store-reveal>方寸之间，种下一片森林。 · 桌面生态补给站</footer>
 <section th:fragment="cards(items)" class="product-grid" aria-label="商品">
-  <article class="product-card" th:each="item : ${items}">
+  <article class="product-card" th:each="item : ${items}" data-store-reveal>
     <a th:href="@{/product(id=${item.id})}">
       <img th:src="${item.coverImage}" th:alt="${item.name}" loading="lazy" width="480" height="360">
       <div class="card-body">

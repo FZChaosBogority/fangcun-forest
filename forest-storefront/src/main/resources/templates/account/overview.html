@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>我的森林 · 方寸森林</title><link rel="icon" type="image/png" th:href="@{/images/forest-mascot.png}"><link rel="stylesheet" th:href="@{/css/forest.css}">
+  <link rel="stylesheet" href="/css/page-transitions.css" th:href="@{/css/page-transitions.css}">
+  <link rel="stylesheet" href="/css/store-transitions.css" th:href="@{/css/store-transitions.css}">
+  <script src="/js/page-transition.js" th:src="@{/js/page-transition.js}" data-store-transitions></script>
+</head>
+<body><header th:replace="~{fragments/layout :: header}"></header><main class="container">
+  <div class="page-heading"><p class="eyebrow">YOUR LITTLE GREEN CORNER</p><h1 th:text="|你好，${currentAccount.displayName}|"></h1><p class="muted" th:text="|商城账号：${currentAccount.username}|"></p></div>
+  <section class="account-links"><a class="panel" th:href="@{/cart}"><h2>绿意清单 →</h2><p>查看购物车，选好下一份补给。</p></a><a class="panel" th:href="@{/orders}"><h2>我的订单 →</h2><p>查看订单与支付状态。</p></a><a class="panel" th:href="@{/category}"><h2>继续探索 →</h2><p>让你的桌面，多一抹绿意。</p></a></section>
+</main><footer th:replace="~{fragments/layout :: footer}"></footer></body></html>

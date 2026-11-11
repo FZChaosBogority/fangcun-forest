@@ -1,0 +1,17 @@
+html { background: #fcfcf8; }
+html.page-entering body { animation: forest-page-enter .36s ease-out both; }
+@keyframes forest-page-exit { from { opacity: 1; } to { opacity: 0; } }
+@keyframes forest-page-enter { from { opacity: 0; } to { opacity: 1; } }
+::view-transition { background: #fcfcf8; }
+::view-transition-group(root) { animation-duration: .64s; }
+::view-transition-old(root) { animation: forest-page-exit .28s ease-in both; mix-blend-mode: normal; }
+::view-transition-new(root) { animation: forest-page-enter .36s ease-out .28s both; mix-blend-mode: normal; }
+html.auth-exit-arrival::view-transition-group(root) { animation-duration: .88s; }
+html.auth-exit-arrival::view-transition-old(root) { animation-duration: .52s; }
+html.auth-exit-arrival::view-transition-new(root) { animation-delay: .52s; }
+html.auth-exit-arrival::view-transition-group(forest-scene), html.auth-exit-arrival::view-transition-group(forest-panel) { animation: none; }
+html.auth-exit-arrival::view-transition-old(forest-scene) { animation: forest-scene-exit .52s ease-in both; }
+html.auth-exit-arrival::view-transition-old(forest-panel) { animation: forest-panel-exit .52s ease-in both; }
+@keyframes forest-scene-exit { to { opacity: 0; transform: translateX(-100%); } }
+@keyframes forest-panel-exit { to { opacity: 0; transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) { html.page-entering body { animation: none; } }

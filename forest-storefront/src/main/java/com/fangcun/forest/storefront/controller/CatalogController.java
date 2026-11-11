@@ -2,6 +2,7 @@ package com.fangcun.forest.storefront.controller;
 
 import com.fangcun.forest.storefront.common.PageRequest;
 import com.fangcun.forest.storefront.entity.Product;
+import com.fangcun.forest.storefront.enums.ProductSort;
 import com.fangcun.forest.storefront.service.CatalogService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +18,7 @@ public class CatalogController {
         this.catalogService = catalogService;
     }
 
-    @GetMapping({"/", "/main"})
+    @GetMapping("/main")
     public String home(Model model) {
         model.addAttribute("categories", catalogService.findRootCategories());
         model.addAttribute("products", catalogService.findFeaturedProducts());
@@ -30,10 +31,14 @@ public class CatalogController {
             @RequestParam(defaultValue = "") String keyword,
             @RequestParam(defaultValue = "1") long page,
             @RequestParam(defaultValue = "6") long size,
+            @RequestParam(defaultValue = "DEFAULT") ProductSort sort,
+            @RequestParam(defaultValue = "false") boolean inStock,
             Model model) {
         model.addAttribute("result",
-                catalogService.findProducts(categoryId, keyword, new PageRequest(page, size)));
-        model.addAttribute("categories", catalogService.findRootCategories());
+                catalogService.findProducts(categoryId, keyword, sort, inStock, new PageRequest(page, size)));
+        model.addAttribute("categories", catalogService.findAllCategories());
+        model.addAttribute("sort", sort); model.addAttribute("sorts", ProductSort.values());
+        model.addAttribute("inStock", inStock);
         model.addAttribute("categoryId", categoryId);
         model.addAttribute("keyword", keyword.strip());
         return "catalog/list";
@@ -43,8 +48,10 @@ public class CatalogController {
     public String product(@RequestParam long id, Model model) {
         Product product = catalogService.getOnSaleProduct(id);
         model.addAttribute("product", product);
+        model.addAttribute("logoutReturnTo", "/product?id=" + id);
         model.addAttribute("category", catalogService.getCategory(product.getCategoryId()));
         model.addAttribute("images", catalogService.findImages(id));
+        model.addAttribute("related", catalogService.findRelatedProducts(product));
         return "catalog/detail";
     }
 }

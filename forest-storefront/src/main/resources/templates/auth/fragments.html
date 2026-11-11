@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<body>
+<a th:fragment="brand" class="forest-brand" href="/" th:href="@{/}" data-auth-route aria-label="方寸森林首页">
+  <img src="/images/forest-mascot.png" th:src="@{/images/forest-mascot.png}" width="52" height="52" alt="盆栽少女小树">
+  <span class="forest-brand-name"><span data-ink-text="brand">方寸森林</span><small data-ink-text="brand-en">FANGCUN FOREST</small></span>
+</a>
+<aside th:fragment="story" class="forest-story" aria-label="方寸森林"
+       data-story-original="/images/forest-welcome.png" th:data-story-original="@{/images/forest-welcome.png}"
+       data-story-watercolor="/images/forest-welcome-watercolor.png" th:data-story-watercolor="@{/images/forest-welcome-watercolor.png}"
+       data-story-sculpture="/images/forest-welcome-sculpture.png" th:data-story-sculpture="@{/images/forest-welcome-sculpture.png}">
+  <div class="story-backdrop">
+    <img class="story-photo is-active" data-story-image src="/images/forest-welcome.png" th:src="@{/images/forest-welcome.png}"
+         width="1122" height="1402" alt="露珠落在蕨叶与苔藓上，微光照亮一方小小森林" fetchpriority="high">
+    <img class="story-photo" data-story-image src="/images/forest-welcome.png" th:src="@{/images/forest-welcome.png}"
+         width="1122" height="1402" alt="" aria-hidden="true">
+    <div class="story-shade"></div>
+  </div>
+  <div class="story-top">
+    <a th:replace="~{auth/fragments :: brand}"></a>
+    <span class="story-top-label" data-ink-text="site-label">桌面生态补给站</span>
+  </div>
+  <div class="story-content">
+    <p class="story-eyebrow"><span class="story-eyebrow-line"></span><span data-ink-text="eyebrow">A LITTLE FOREST, A LITTLE PEACE</span></p>
+    <div class="story-copy" aria-live="polite" aria-atomic="true">
+      <h1 class="story-title" data-story-title data-ink-text="main">把一小片森林，<br>安放在你的日常。</h1>
+      <p class="story-description" data-story-description data-ink-text="main">从一瓶苔藓开始，让忙碌的生活，<br>也有一处慢慢生长的角落。</p>
+    </div>
+    <div class="story-notes">
+      <div><span class="note-number" data-ink-text="note-1">01</span><strong data-ink-text="note-1">一方微景</strong><small data-ink-text="note-1">盛下自然的模样</small></div>
+      <div><span class="note-number" data-ink-text="note-2">02</span><strong data-ink-text="note-2">一抹绿意</strong><small data-ink-text="note-2">留住生活的呼吸</small></div>
+      <div><span class="note-number" data-ink-text="note-3">03</span><strong data-ink-text="note-3">一份日常</strong><small data-ink-text="note-3">慢慢养成小森林</small></div>
+    </div>
+    <div class="story-bottom">
+      <div class="story-page">
+        <span data-story-current aria-live="polite">01</span>
+        <div class="story-progress" role="group" aria-label="选择背景页" style="--story-progress: 0%">
+          <span class="story-progress-rail" aria-hidden="true"></span>
+          <span class="story-progress-fill" aria-hidden="true"></span>
+          <span class="story-progress-dot" aria-hidden="true"></span>
+          <button class="story-progress-stop" type="button" data-story-select="0" style="--stop: 0%" aria-label="第 1 页：自然森林" aria-pressed="true"></button>
+          <button class="story-progress-stop" type="button" data-story-select="1" style="--stop: 50%" aria-label="第 2 页：水彩微森林" aria-pressed="false"></button>
+          <button class="story-progress-stop" type="button" data-story-select="2" style="--stop: 100%" aria-label="第 3 页：立体生态景观" aria-pressed="false"></button>
+        </div>
+        <span>03</span>
+      </div>
+      <div class="story-controls">
+        <button type="button" class="story-arrow" data-story-previous aria-label="上一段森林故事">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>
+        </button>
+        <button type="button" class="story-arrow" data-story-next aria-label="下一段森林故事">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</aside>
+<footer th:fragment="footer" class="auth-footer">
+  <span>© 2026 方寸森林</span><span>方寸之间，自有森林。</span>
+</footer>
+</body>
+</html>

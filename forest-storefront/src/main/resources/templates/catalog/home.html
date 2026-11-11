@@ -1,33 +1,40 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <head>
+  <link rel="icon" type="image/png" th:href="@{/images/forest-mascot.png}">
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>方寸森林 · 桌面生态补给站</title>
+  <link rel="preload" as="image" th:href="@{/images/forest-hero-realistic.png}">
   <link rel="stylesheet" th:href="@{/css/forest.css}">
+  <link rel="stylesheet" href="/css/page-transitions.css" th:href="@{/css/page-transitions.css}">
+  <link rel="stylesheet" href="/css/store-transitions.css" th:href="@{/css/store-transitions.css}">
+  <script src="/js/page-transition.js" th:src="@{/js/page-transition.js}" data-store-transitions></script>
+  <script src="/js/store-motion.js" th:src="@{/js/store-motion.js}"></script>
 </head>
 <body>
 <header th:replace="~{fragments/layout :: header}"></header>
 <main class="container">
-  <section class="hero">
+  <section class="hero" data-store-reveal>
     <div><p class="eyebrow">A LITTLE FOREST, A LITTLE PEACE</p>
       <h1>把一小片森林，<br>安放在你的桌面。</h1>
       <p>从一瓶苔藓开始，慢慢搭建属于自己的微小世界。</p>
       <a class="button" th:href="@{/category}">探索生态补给 <span aria-hidden="true">↗</span></a>
     </div>
-    <img th:src="@{/images/terrarium.svg}" alt="玻璃容器中的苔藓与蕨类插画" width="480" height="360">
+    <img class="hero-mascot" th:src="@{/images/forest-hero-realistic.png}" alt="盆栽小树的绿色叶冠修剪成双马尾少女，露出俏皮的笑容" width="1448" height="1086" fetchpriority="high">
   </section>
+  <form class="search-bar" method="get" th:action="@{/category}" data-store-reveal><label for="home-keyword">寻找一份绿意</label><input id="home-keyword" name="keyword" type="search" maxlength="120" placeholder="搜索苔藓、生态瓶、养护工具…"><button class="button" type="submit">搜索补给</button></form>
   <section aria-labelledby="categories-heading">
-    <div class="section-heading"><h2 id="categories-heading">从这里开始</h2><span>为每一寸绿意找到补给</span></div>
+    <div class="section-heading" data-store-reveal><h2 id="categories-heading">从这里开始</h2><span>为每一寸绿意找到补给</span></div>
     <div class="category-links">
-      <a th:each="category : ${categories}" th:href="@{/category(categoryId=${category.id})}"
+      <a th:each="category : ${categories}" th:href="@{/category(categoryId=${category.id})}" data-store-reveal
          th:text="${category.name}">分类</a>
     </div>
-    <p class="empty-state" th:if="${#lists.isEmpty(categories)}">暂无商品分类。</p>
+    <p class="empty-state" th:if="${#lists.isEmpty(categories)}" data-store-reveal>暂无商品分类。</p>
   </section>
   <section aria-labelledby="featured-heading">
-    <div class="section-heading"><h2 id="featured-heading">精选生态补给</h2><a th:href="@{/category}">查看全部 →</a></div>
+    <div class="section-heading" data-store-reveal><h2 id="featured-heading">精选生态补给</h2><a th:href="@{/category}">查看全部 →</a></div>
     <div th:replace="~{fragments/layout :: cards(${products})}"></div>
-    <p class="empty-state" th:if="${#lists.isEmpty(products)}">暂无上架商品，稍后再来看看。</p>
+    <p class="empty-state" th:if="${#lists.isEmpty(products)}" data-store-reveal>暂无上架商品，稍后再来看看。</p>
   </section>
 </main>
 <footer th:replace="~{fragments/layout :: footer}"></footer>

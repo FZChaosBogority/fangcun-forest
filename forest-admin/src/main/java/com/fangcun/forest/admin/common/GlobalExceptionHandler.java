@@ -4,6 +4,9 @@ import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.ConcurrencyFailureException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -43,6 +46,19 @@ public class GlobalExceptionHandler {
     public ModelAndView database(DataAccessException exception) {
         log.error("Database operation failed", exception);
         return error(HttpStatus.INTERNAL_SERVER_ERROR, "数据暂时无法读取，请稍后重试。");
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ModelAndView integrity(DataIntegrityViolationException exception) {
+        return error(HttpStatus.CONFLICT, "数据有重名或关联记录，未完成操作，请刷新后检查。");
+    }
+    @ExceptionHandler(ConcurrencyFailureException.class)
+    public ModelAndView concurrent(ConcurrencyFailureException exception) {
+        return error(HttpStatus.CONFLICT, "数据正在被其他操作更新，请刷新页面后重试。");
+    }
+    @ExceptionHandler(AccessDeniedException.class)
+    public ModelAndView forbidden(AccessDeniedException exception) {
+        return error(HttpStatus.FORBIDDEN, "当前账号没有管理权限。");
     }
 
     @ExceptionHandler(Exception.class)

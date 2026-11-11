@@ -3,6 +3,7 @@
 *.class
 *.log
 logs/
+.local/
 
 # IDE
 .idea/

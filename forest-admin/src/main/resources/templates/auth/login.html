@@ -1,0 +1,6 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"><head th:replace="~{fragments/layout :: head('管理员登录')}"></head>
+<body class="admin-login-body"><main class="admin-login panel"><img th:src="@{/images/forest-mascot.png}" width="72" height="72" alt="盆栽少女小树"><p class="eyebrow">FANGCUN FOREST WORKSPACE</p><h1>管理这片小森林</h1><p class="muted">使用管理员账号进入生态补给工作台。</p>
+  <p class="notice error-notice" role="alert" th:if="${param.error != null}">账号或密码不正确，或当前账号没有管理权限。</p><p class="notice error-notice" role="alert" th:if="${param.unavailable != null}">暂时无法登录，请稍后重试。</p><p class="notice" th:if="${param.expired != null}">账号状态或密码已变化，请重新登录。</p><p class="notice" th:if="${param.logout != null}">已安全退出。</p>
+  <form th:action="@{/login}" method="post" data-once-submit><div class="admin-field"><label for="username">管理员账号</label><input id="username" name="username" autocomplete="username" required maxlength="50" placeholder="管理员用户名"></div><div class="admin-field"><label for="password">登录密码</label><input id="password" name="password" type="password" autocomplete="current-password" required maxlength="72" placeholder="请输入密码"></div><button class="button full-button" type="submit">进入管理工作台 →</button></form>
+</main></body></html>

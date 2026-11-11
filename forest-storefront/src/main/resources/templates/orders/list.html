@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>我的订单 · 方寸森林</title><link rel="icon" type="image/png" th:href="@{/images/forest-mascot.png}"><link rel="stylesheet" th:href="@{/css/forest.css}">
+  <link rel="stylesheet" href="/css/page-transitions.css" th:href="@{/css/page-transitions.css}">
+  <link rel="stylesheet" href="/css/store-transitions.css" th:href="@{/css/store-transitions.css}">
+  <script src="/js/page-transition.js" th:src="@{/js/page-transition.js}" data-store-transitions></script>
+</head>
+<body><header th:replace="~{fragments/layout :: header}"></header><main class="container">
+  <div class="page-heading"><p class="eyebrow">YOUR FOREST JOURNAL</p><h1>我的订单</h1><p class="muted">每一份补给，都记录在这里。</p></div>
+  <nav class="order-tabs" aria-label="订单状态"><a th:href="@{/orders}" th:classappend="${selectedStatus == null} ? 'active'">全部订单</a><a th:each="state : ${statuses}" th:href="@{/orders(status=${state})}" th:text="${state.label}" th:classappend="${state == selectedStatus} ? 'active'"></a></nav>
+  <div class="empty-state" th:if="${#lists.isEmpty(result.records)}"><h2>这里还没有订单</h2><p>去挑选一份喜欢的绿意吧。</p><a class="button" th:href="@{/category}">探索补给</a></div>
+  <article class="order-list-card panel" th:each="order : ${result.records}"><div><span class="status-badge" th:text="${order.status.label}"></span><h2><a th:href="@{/orders/{id}(id=${order.id})}" th:text="${order.orderNo}"></a></h2><small class="muted" th:text="|创建于 ${#temporals.format(order.createdAt, 'yyyy-MM-dd HH:mm')}|"></small></div>
+    <div class="order-card-actions"><strong class="price" th:text="|¥${#numbers.formatDecimal(order.totalAmount, 1, 2)}|"></strong><a class="button secondary" th:href="@{/orders/{id}(id=${order.id})}">查看订单</a><a class="button" th:if="${order.status.name() == 'PENDING_PAYMENT'}" th:href="@{/orders/{id}/pay(id=${order.id})}">去支付</a></div>
+  </article>
+  <nav class="pagination" aria-label="订单分页" th:if="${result.total > 0}"><a th:if="${result.current > 1}" th:href="@{/orders(status=${selectedStatus},page=${result.current - 1})}">上一页</a><span th:text="|第 ${result.current} 页 · 共 ${result.pages} 页|"></span><a th:if="${result.current < result.pages}" th:href="@{/orders(status=${selectedStatus},page=${result.current + 1})}">下一页</a></nav>
+</main><footer th:replace="~{fragments/layout :: footer}"></footer></body></html>

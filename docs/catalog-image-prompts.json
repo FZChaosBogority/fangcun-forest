@@ -1,0 +1,105 @@
+{
+  "generator": "OpenAI built-in imagegen",
+  "note": "AI-generated teaching catalog illustrations in a realistic photographic style; no original character reference sheet is included in the repository.",
+  "referenceUse": "bog3.png supplies the girl's twin-tail silhouette and cheeky expression for the homepage topiary only. The existing approved forest-mascot.png supplies the green potted-tree identity.",
+  "assets": [
+    {
+      "key": "forest-hero-realistic",
+      "name": "首页盆栽少女写实展示图",
+      "paths": [
+        "forest-storefront/src/main/resources/static/images/forest-hero-realistic.png"
+      ],
+      "prompt": "Use case: photorealistic-natural. Asset type: large homepage showcase photograph for Fangcun Forest, a desktop ecology shop. Create a new realistic botanical art photograph, exact canvas 1536 x 1152 pixels, landscape 4:3. Input image 1 is ONLY a character identity reference: the front-view girl's fluffy twin ponytails, swept bangs and little ahoge, mischievous half-lidded eyes, cheeky asymmetrical toothy grin with a little tongue. Input image 2 is ONLY the existing green plant-logo identity and silhouette reference. Subject: ONE actual small potted TOPIARY TREE, with a short natural woody trunk and its entire living GREEN LEAFY CROWN carefully pruned into this girl's HEAD, including BOTH big fluffy hanging twin ponytails, bangs, eyes and cheeky facial expression. All facial surfaces and features must be made of green foliage and sculpted recesses, with pale-green tiny leaves shaping the grin's simplified teeth and little leaf tongue. NO human skin, no orange hair, no human portrait, no body or clothes. Make the full tree appear physically real: thousands of tiny glossy boxwood leaves with natural variation, believable organic clipping, subtle imperfect leaf edges, dark-green sculpted eye recesses, leaf-shaped hair ties; not a flat drawing or plastic toy. A simple muted sage ceramic flowerpot containing soil and a little moss, complete pot and both ponytails visible, tree fills about 84% of the image. Frontal slightly three-quarter photographic view on a warm ivory tabletop against a softly blurred cream/sage studio, soft natural window light, detailed botanical textures, subtle contact shadow. The tree is the unmistakable star, matching the supplied plant mascot. NO text, logos, watermark, frame or UI. No transparent background."
+    },
+    {
+      "key": "fc-forest-001",
+      "name": "晨雾苔藓瓶",
+      "sku": "FC-FOREST-001",
+      "paths": [
+        "forest-storefront/src/main/resources/static/images/products/fc-forest-001.png",
+        "forest-admin/src/main/resources/static/images/products/fc-forest-001.png"
+      ],
+      "prompt": "Use case: product-mockup. Asset type: individual product photograph for Fangcun Forest, a desktop ecology supply shop. Generate ONE separate image, exact canvas 1536 x 1152 pixels, landscape 4:3. High-end realistic botanical product photography, soft diffused window light, warm ivory tabletop and quiet pale sage/cream studio background, restrained forest-green color harmony, tactile real materials, crisp subject with gentle depth of field. Center the complete sellable object with comfortable margins; suitable for a product card and detail-page hero. No text, letters, logos, numbers, labels, watermark, UI, hands or people. Do not make a collage or multiple panels. Product: a small finished morning-mist moss terrarium in a clear glass bottle with a simple cork lid. Lush cushion moss, one delicate fern, small dark textured stones, tiny natural condensation droplets on the inner glass, believable layered substrate. Full bottle visible in a close three-quarter view, quiet magical morning atmosphere but entirely photographic; no artificial fog cloud."
+    },
+    {
+      "key": "fc-moon-001",
+      "name": "月面微景观",
+      "sku": "FC-MOON-001",
+      "paths": [
+        "forest-storefront/src/main/resources/static/images/products/fc-moon-001.png",
+        "forest-admin/src/main/resources/static/images/products/fc-moon-001.png"
+      ],
+      "prompt": "Use case: product-mockup. Asset type: individual product photograph for Fangcun Forest, a desktop ecology supply shop. Generate ONE separate image, exact canvas 1536 x 1152 pixels, landscape 4:3. High-end realistic botanical product photography, soft diffused window light, warm ivory tabletop and quiet pale sage/cream studio background, restrained forest-green color harmony, tactile real materials, crisp subject with gentle depth of field. Center the complete sellable object with comfortable margins; suitable for a product card and detail-page hero. No text, letters, logos, numbers, labels, watermark, UI, hands or people. Do not make a collage or multiple panels. Product: a finished miniature moon-surface-inspired botanical landscape in a shallow round off-white ceramic dish. Pale gray mineral gravel, a few naturally cratered light-gray stones and restrained soft-green moss mounds with one tiny fern form a little lunar world. Real handmade tabletop micro-landscape, full dish visible, angled view showing the miniature terrain. No astronauts, planet backgrounds, starry skies or fantasy glowing objects."
+    },
+    {
+      "key": "fc-moss-001",
+      "name": "雨林苔藓",
+      "sku": "FC-MOSS-001",
+      "paths": [
+        "forest-storefront/src/main/resources/static/images/products/fc-moss-001.png",
+        "forest-admin/src/main/resources/static/images/products/fc-moss-001.png"
+      ],
+      "prompt": "Use case: product-mockup. Asset type: individual product photograph for Fangcun Forest, a desktop ecology supply shop. Generate ONE separate image, exact canvas 1536 x 1152 pixels, landscape 4:3. High-end realistic botanical product photography, soft diffused window light, warm ivory tabletop and quiet pale sage/cream studio background, restrained forest-green color harmony, tactile real materials, crisp subject with gentle depth of field. Center the complete sellable object with comfortable margins; suitable for a product card and detail-page hero. No text, letters, logos, numbers, labels, watermark, UI, hands or people. Do not make a collage or multiple panels. Product: a fresh portion of lush rainforest cushion moss for terrarium building. Several dense velvety emerald and deep-green moss cushions on a small shallow plain natural kraft nursery tray, with one loose cushion on the tabletop so its texture and earthy underside are visible. Macro botanical detail, tiny dewdrops, realistic fibers and rich soft texture. The moss is the product; no glass jar or finished terrarium."
+    },
+    {
+      "key": "fc-fern-001",
+      "name": "迷你波士顿蕨",
+      "sku": "FC-FERN-001",
+      "paths": [
+        "forest-storefront/src/main/resources/static/images/products/fc-fern-001.png",
+        "forest-admin/src/main/resources/static/images/products/fc-fern-001.png"
+      ],
+      "prompt": "Use case: product-mockup. Asset type: individual product photograph for Fangcun Forest, a desktop ecology supply shop. Generate ONE separate image, exact canvas 1536 x 1152 pixels, landscape 4:3. High-end realistic botanical product photography, soft diffused window light, warm ivory tabletop and quiet pale sage/cream studio background, restrained forest-green color harmony, tactile real materials, crisp subject with gentle depth of field. Center the complete sellable object with comfortable margins; suitable for a product card and detail-page hero. No text, letters, logos, numbers, labels, watermark, UI, hands or people. Do not make a collage or multiple panels. Product: one small miniature Boston fern (Nephrolepis) in a simple unbranded muted sage nursery pot. Many graceful arching featherlike fronds made of fine narrow leaflets, fresh varied natural greens, a compact plant appropriate for a desk or terrarium. Entire plant and pot visible. Real nursery plant, no large broad tropical leaves and no glass terrarium."
+    },
+    {
+      "key": "fc-stone-001",
+      "name": "火山石造景包",
+      "sku": "FC-STONE-001",
+      "paths": [
+        "forest-storefront/src/main/resources/static/images/products/fc-stone-001.png",
+        "forest-admin/src/main/resources/static/images/products/fc-stone-001.png"
+      ],
+      "prompt": "Use case: product-mockup. Asset type: individual product photograph for Fangcun Forest, a desktop ecology supply shop. Generate ONE separate image, exact canvas 1536 x 1152 pixels, landscape 4:3. High-end realistic botanical product photography, soft diffused window light, warm ivory tabletop and quiet pale sage/cream studio background, restrained forest-green color harmony, tactile real materials, crisp subject with gentle depth of field. Center the complete sellable object with comfortable margins; suitable for a product card and detail-page hero. No text, letters, logos, numbers, labels, watermark, UI, hands or people. Do not make a collage or multiple panels. Product: a volcanic lava-rock aquascaping material pack. Five irregular porous dark charcoal and muted reddish-brown lava stones of different small sizes arranged naturally, with a small amount of matching gravel and a plain open unlabelled kraft paper pouch behind them. Show rough porous mineral texture very clearly; full arrangement visible. Not pale lunar rocks, not a finished planted scene, no printed packaging."
+    },
+    {
+      "key": "fc-soil-001",
+      "name": "赤玉土基质包",
+      "sku": "FC-SOIL-001",
+      "paths": [
+        "forest-storefront/src/main/resources/static/images/products/fc-soil-001.png",
+        "forest-admin/src/main/resources/static/images/products/fc-soil-001.png"
+      ],
+      "prompt": "Use case: product-mockup. Asset type: individual product photograph for Fangcun Forest, a desktop ecology supply shop. Generate ONE separate image, exact canvas 1536 x 1152 pixels, landscape 4:3. High-end realistic botanical product photography, soft diffused window light, warm ivory tabletop and quiet pale sage/cream studio background, restrained forest-green color harmony, tactile real materials, crisp subject with gentle depth of field. Center the complete sellable object with comfortable margins; suitable for a product card and detail-page hero. No text, letters, logos, numbers, labels, watermark, UI, hands or people. Do not make a collage or multiple panels. Product: akadama granular planting substrate. A small shallow off-white ceramic scoop/dish with a generous mound of dry tan, ochre and rust-brown angular clay granules, a few spilled granules in front and one plain unlabelled kraft resealable pouch behind. Granules about 2–5 mm with realistic crumbly texture. This is granular growing medium, not black soil, powder, lava boulders or food."
+    },
+    {
+      "key": "fc-tweezer-001",
+      "name": "长柄造景镊子",
+      "sku": "FC-TWEEZER-001",
+      "paths": [
+        "forest-storefront/src/main/resources/static/images/products/fc-tweezer-001.png",
+        "forest-admin/src/main/resources/static/images/products/fc-tweezer-001.png"
+      ],
+      "prompt": "Use case: product-mockup. Asset type: individual product photograph for Fangcun Forest, a desktop ecology supply shop. Generate ONE separate image, exact canvas 1536 x 1152 pixels, landscape 4:3. High-end realistic botanical product photography, soft diffused window light, warm ivory tabletop and quiet pale sage/cream studio background, restrained forest-green color harmony, tactile real materials, crisp subject with gentle depth of field. Center the complete sellable object with comfortable margins; suitable for a product card and detail-page hero. No text, letters, logos, numbers, labels, watermark, UI, hands or people. Do not make a collage or multiple panels. Product: ONE long slim stainless-steel aquascaping tweezer with a gently angled precision tip, two joined arms and subtle serrated grip. Entire tool displayed diagonally on the ivory tabletop so the length, narrow shape and polished/brushed metal texture are clear. A tiny unobtrusive moss fragment beside the tip suggests its use. Minimal premium tool product shot; no other tools, no hands, no text etched on metal."
+    },
+    {
+      "key": "fc-light-001",
+      "name": "桌面植物补光灯",
+      "sku": "FC-LIGHT-001",
+      "paths": [
+        "forest-storefront/src/main/resources/static/images/products/fc-light-001.png",
+        "forest-admin/src/main/resources/static/images/products/fc-light-001.png"
+      ],
+      "prompt": "Use case: product-mockup. Asset type: individual product photograph for Fangcun Forest, a desktop ecology supply shop. Generate ONE separate image, exact canvas 1536 x 1152 pixels, landscape 4:3. High-end realistic botanical product photography, soft diffused window light, warm ivory tabletop and quiet pale sage/cream studio background, restrained forest-green color harmony, tactile real materials, crisp subject with gentle depth of field. Center the complete sellable object with comfortable margins; suitable for a product card and detail-page hero. No text, letters, logos, numbers, labels, watermark, UI, hands or people. Do not make a collage or multiple panels. Product: a compact modern desktop plant grow light with a slim muted sage/cream adjustable gooseneck, a small ring-shaped white LED head and a stable round base. Light switched on with soft neutral warm-white LEDs illuminating one small potted fern beneath it. Entire lamp and base visible, clean functional design, realistic metal and matte plastic. The lamp is the main product. No purple glow, logos or text."
+    },
+    {
+      "key": "fc-forest-002",
+      "name": "林间溪谷生态瓶",
+      "sku": "FC-FOREST-002",
+      "paths": [
+        "forest-storefront/src/main/resources/static/images/products/fc-forest-002.png",
+        "forest-admin/src/main/resources/static/images/products/fc-forest-002.png"
+      ],
+      "prompt": "Use case: product-mockup. Asset type: individual product photograph for Fangcun Forest, a desktop ecology supply shop. Generate ONE separate image, exact canvas 1536 x 1152 pixels, landscape 4:3. High-end realistic botanical product photography, soft diffused window light, warm ivory tabletop and quiet pale sage/cream studio background, restrained forest-green color harmony, tactile real materials, crisp subject with gentle depth of field. Center the complete sellable object with comfortable margins; suitable for a product card and detail-page hero. No text, letters, logos, numbers, labels, watermark, UI, hands or people. Do not make a collage or multiple panels. Product: a finished forest-creek glass terrarium in a clear wide-bellied open glass vessel. Layered slate-gray rocks, rich cushion moss, delicate small fern fronds and a narrow winding stream-like strip of clear water/silvery pebbles form a tiny believable woodland ravine. Full vessel and layered substrate visible, close three-quarter product view. A lush handmade miniature landscape with visible glass reflections, distinct from a simple cork-lidded moss bottle. No outdoor full-size landscape."
+    }
+  ]
+}

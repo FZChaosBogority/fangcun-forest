@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <head>
+  <link rel="icon" type="image/png" th:href="@{/images/forest-mascot.png}">
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title th:text="|${product.name} · 方寸森林|">商品详情</title><link rel="stylesheet" th:href="@{/css/forest.css}">
+  <link rel="stylesheet" href="/css/page-transitions.css" th:href="@{/css/page-transitions.css}">
+  <link rel="stylesheet" href="/css/store-transitions.css" th:href="@{/css/store-transitions.css}">
+  <script src="/js/page-transition.js" th:src="@{/js/page-transition.js}" data-store-transitions></script>
 </head>
 <body>
 <header th:replace="~{fragments/layout :: header}"></header>
@@ -11,11 +15,29 @@
     <span>/</span><a th:href="@{/category(categoryId=${category.id})}" th:text="${category.name}">分类</a>
     <span>/</span><span th:text="${product.name}">商品</span></nav>
   <article class="product-detail">
-    <img class="detail-image" th:src="${product.coverImage}" th:alt="${product.name}" width="480" height="360">
+    <div><img class="detail-image" data-gallery-main th:src="${product.coverImage}" th:alt="${product.name}" width="480" height="360">
+      <div class="gallery-thumbs" th:if="${!#lists.isEmpty(images)}">
+        <button type="button" data-gallery-image th:data-src="${product.coverImage}" th:data-alt="${product.name}" aria-label="查看商品封面"><img th:src="${product.coverImage}" alt="封面"></button>
+        <button type="button" th:each="image : ${images}" data-gallery-image th:data-src="${image.imagePath}" th:data-alt="${image.altText ?: product.name}" aria-label="查看商品细节"><img th:src="${image.imagePath}" th:alt="${image.altText ?: product.name}"></button>
+      </div>
+    </div>
     <div><p class="eyebrow" th:text="${product.sku}">SKU</p>
       <h1 th:text="${product.name}">商品名</h1><p class="lead" th:text="${product.summary}">简介</p>
       <p class="price large" th:text="|¥${#numbers.formatDecimal(product.price, 1, 2)}|"></p>
       <p th:text="${product.stock > 0 ? '当前库存：' + product.stock : '暂时售罄'}"></p>
+      <div data-purchase-controls th:data-product-id="${product.id}">
+      <form class="purchase-form" th:if="${currentAccount != null and product.stock > 0}" th:action="@{/cart/add}" method="post">
+        <input type="hidden" name="productId" th:value="${product.id}">
+        <label for="quantity">数量</label><input id="quantity" type="number" name="quantity" value="1" min="1" th:max="${T(java.lang.Math).min(99, product.stock)}" required>
+        <button class="button" type="submit">加入购物车</button>
+      </form>
+      <form class="purchase-form" th:if="${currentAccount == null and product.stock > 0}" th:action="@{/login}" method="get" data-login-required>
+        <input type="hidden" name="returnTo" th:value="|/product?id=${product.id}|">
+        <label for="quantity">数量</label><input id="quantity" type="number" name="quantity" value="1" min="1" th:max="${T(java.lang.Math).min(99, product.stock)}" required>
+        <button class="button" type="submit">加入购物车</button>
+      </form>
+      <p class="notice" th:if="${product.stock == 0}">这份补给暂时售罄，欢迎看看其他绿意。</p>
+      </div>
       <h2>关于这份补给</h2><p class="description" th:text="${product.description}"></p>
       <a class="text-link" th:href="@{/category}">继续探索 →</a>
     </div>
@@ -24,6 +46,7 @@
     <h2>细节一览</h2><div class="gallery"><img th:each="image : ${images}" th:src="${image.imagePath}"
       th:alt="${image.altText ?: product.name}" loading="lazy" width="480" height="360"></div>
   </section>
+  <section th:if="${!#lists.isEmpty(related)}"><h2>同类小小绿意</h2><div th:replace="~{fragments/layout :: cards(${related})}"></div></section>
 </main>
 <footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>

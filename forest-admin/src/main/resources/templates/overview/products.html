@@ -1,29 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>商品目录 · 方寸森林</title><link rel="stylesheet" th:href="@{/css/forest.css}">
-</head>
-<body>
-<header th:replace="~{fragments/layout :: header}"></header>
-<main class="container">
-  <div class="page-heading"><h1>商品目录</h1><p th:text="|共 ${result.total} 件商品|"></p></div>
-  <p th:replace="~{fragments/layout :: notice}"></p>
-  <div class="table-wrap"><table><caption class="sr-only">商品价格、库存与状态</caption>
-    <thead><tr><th>SKU</th><th>商品名称</th><th>分类编号</th><th>价格</th><th>库存</th><th>状态</th><th>版本</th></tr></thead>
-    <tbody><tr th:each="product : ${result.records}">
-      <td th:text="${product.sku}"></td><td th:text="${product.name}"></td><td th:text="${product.categoryId}"></td>
-      <td th:text="|¥${#numbers.formatDecimal(product.price, 1, 2)}|"></td><td th:text="${product.stock}"></td>
-      <td><span class="tag" th:text="${product.status.name() == 'ON_SALE' ? '已上架' : '已下架'}"></span></td>
-      <td th:text="${product.version}"></td>
-    </tr></tbody>
-  </table></div>
-  <p class="empty-state" th:if="${#lists.isEmpty(result.records)}">当前页暂无商品。<a th:href="@{/products}">返回第一页</a></p>
-  <nav class="pagination" aria-label="商品分页" th:if="${result.total > 0}">
-    <a th:if="${result.current > 1}" th:href="@{/products(page=${result.current - 1},size=${result.size})}">上一页</a>
-    <span th:text="|第 ${result.current} 页 · 共 ${result.pages} 页|"></span>
-    <a th:if="${result.current < result.pages}" th:href="@{/products(page=${result.current + 1},size=${result.size})}">下一页</a>
-  </nav>
-</main>
-</body>
-</html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"><head th:replace="~{fragments/layout :: head('商品管理')}"></head><body><header th:replace="~{fragments/layout :: header}"></header><main class="container">
+  <div class="page-heading"><p class="eyebrow">FOREST SUPPLIES</p><h1>商品管理</h1><p class="muted">当前一件商品为一个销售 SKU，对应课程中的 Item。</p></div>
+  <div class="section-heading"><h2>补给目录</h2><a class="button" th:href="@{/products/new}">新增商品</a></div>
+  <form class="search-bar" th:action="@{/products}" method="get"><label for="keyword">商品名称 / SKU</label><input id="keyword" name="keyword" type="search" maxlength="120" th:value="${keyword}"><select name="categoryId" aria-label="分类"><option value="">全部分类</option><option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.parentId == null ? category.name : '↳ ' + category.name}" th:selected="${category.id == categoryId}"></option></select><select name="status" aria-label="商品状态"><option value="">全部状态</option><option value="ON_SALE" th:selected="${status != null and status.name() == 'ON_SALE'}">已上架</option><option value="DRAFT" th:selected="${status != null and status.name() == 'DRAFT'}">未上架</option></select><input type="hidden" name="size" th:value="${result.size}"><button class="button" type="submit">查询</button><a th:href="@{/products}">清空</a></form>
+  <p class="muted" th:text="|共 ${result.total} 件商品|"></p><div class="table-wrap"><table><thead><tr><th>ID / SKU</th><th>商品名称</th><th>价格</th><th>库存</th><th>状态</th><th>版本</th><th>操作</th></tr></thead><tbody><tr th:each="product : ${result.records}"><td><small th:text="|${product.id} / ${product.sku}|"></small></td><td th:text="${product.name}"></td><td class="nowrap" th:text="|¥${#numbers.formatDecimal(product.price, 1, 2)}|"></td><td th:text="${product.stock}" th:classappend="${product.stock <= 5} ? 'danger-text'"></td><td><span class="status-badge" th:text="${product.status.name() == 'ON_SALE' ? '已上架' : '未上架'}"></span></td><td th:text="${product.version}"></td><td><a class="text-link" th:href="@{/products/{id}/edit(id=${product.id})}">编辑 / 库存</a></td></tr></tbody></table></div>
+  <p class="empty-state" th:if="${#lists.isEmpty(result.records)}">没有匹配的商品。</p><nav class="pagination" th:if="${result.total > 0}" aria-label="商品分页"><a th:if="${result.current > 1}" th:href="@{/products(keyword=${keyword},categoryId=${categoryId},status=${status},page=${result.current - 1},size=${result.size})}">上一页</a><span th:text="|第 ${result.current} 页 / 共 ${result.pages} 页|"></span><a th:if="${result.current < result.pages}" th:href="@{/products(keyword=${keyword},categoryId=${categoryId},status=${status},page=${result.current + 1},size=${result.size})}">下一页</a></nav>
+</main><footer th:replace="~{fragments/layout :: footer}"></footer></body></html>

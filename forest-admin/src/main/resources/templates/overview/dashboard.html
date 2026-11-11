@@ -1,24 +1,15 @@
 <!DOCTYPE html>
-<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>管理概览 · 方寸森林</title><link rel="stylesheet" th:href="@{/css/forest.css}">
-</head>
-<body>
-<header th:replace="~{fragments/layout :: header}"></header>
-<main class="container">
-  <div class="page-heading"><p class="eyebrow">FOREST WORKSPACE</p><h1>生态补给工作台</h1>
-    <p>从一份补给，到一片森林。</p></div>
-  <p th:replace="~{fragments/layout :: notice}"></p>
-  <section class="metrics" aria-label="当前数据库概览">
-    <article><span>商品分类（含两级）</span><strong th:text="${summary.categories}">0</strong></article>
-    <article><span>全部商品</span><strong th:text="${summary.products}">0</strong></article>
-    <article><span>已上架商品</span><strong th:text="${summary.onSale}">0</strong></article>
-    <article><span>订单总数</span><strong th:text="${summary.orders}">0</strong></article>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"><head th:replace="~{fragments/layout :: head('管理概览')}"></head><body><header th:replace="~{fragments/layout :: header}"></header><main class="container">
+  <div class="page-heading"><p class="eyebrow">FOREST WORKSPACE</p><h1>生态补给工作台</h1><p class="muted">从一份补给，到一片森林。</p></div>
+  <section class="metrics" aria-label="数据库实时概览">
+    <article><span>商品分类（含两级）</span><strong th:text="${summary.categories}"></strong></article>
+    <article><span>全部商品</span><strong th:text="${summary.products}"></strong></article>
+    <article><span>已上架商品</span><strong th:text="${summary.onSale}"></strong></article>
+    <article><span>订单总数</span><strong th:text="${summary.orders}"></strong></article>
+    <article><span>商城用户</span><strong th:text="${summary.customers}"></strong></article>
+    <article><span>待发货订单</span><strong th:text="${summary.awaitingShipment}"></strong></article>
+    <article><span>低库存商品（≤5）</span><strong th:text="${summary.lowStock}"></strong></article>
+    <article><span>模拟支付成交额</span><strong class="metric-money" th:text="|¥${#numbers.formatDecimal(summary.paidAmount, 1, 2)}|"></strong></article>
   </section>
-  <section class="panel"><h2>补给目录</h2><p>查看商品的分类、价格、库存和当前状态。</p>
-    <div class="actions"><a class="button" th:href="@{/products}">查看商品</a>
-    <a class="button secondary" th:href="@{/categories}">查看分类</a></div></section>
-</main>
-</body>
-</html>
+  <section class="panel"><h2>今天照看哪一片绿意</h2><p>维护补给目录，补充库存，处理等待出发的订单。</p><div class="actions"><a class="button" th:href="@{/products/new}">新增商品</a><a class="button secondary" th:href="@{/orders(status='PAID')}">处理待发货订单</a><a class="button secondary" th:href="@{/users}">查看用户</a></div></section>
+</main><footer th:replace="~{fragments/layout :: footer}"></footer></body></html>

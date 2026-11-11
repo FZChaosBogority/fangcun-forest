@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#38583f">
+  <meta name="description" content="欢迎来到方寸森林。选一份桌面生态补给，把自然带进日常。">
+  <title>欢迎来到方寸森林 · 桌面生态补给站</title>
+  <link rel="icon" type="image/png" href="/images/forest-mascot.png" th:href="@{/images/forest-mascot.png}">
+  <link rel="stylesheet" href="/css/auth.css" th:href="@{/css/auth.css}">
+  <link rel="stylesheet" href="/css/page-transitions.css" th:href="@{/css/page-transitions.css}">
+  <link rel="stylesheet" href="/css/store-transitions.css" th:href="@{/css/store-transitions.css}">
+  <script src="/js/page-transition.js" th:src="@{/js/page-transition.js}" data-native-transitions></script>
+  <script defer src="/js/ink-reveal.js" th:src="@{/js/ink-reveal.js}"></script>
+  <script defer src="/js/auth.js" th:src="@{/js/auth.js}"></script>
+</head>
+<body class="auth-body">
+<main class="auth-layout">
+  <aside th:replace="~{auth/fragments :: story}"></aside>
+  <section class="auth-panel" aria-labelledby="welcome-title" data-auth-panel
+           data-welcome-url="/" th:data-welcome-url="@{/}" data-login-url="/login" th:data-login-url="@{/login}">
+    <div class="auth-panel-inner welcome-inner">
+      <a th:replace="~{auth/fragments :: brand}"></a>
+      <div class="auth-view" data-auth-view="welcome" aria-labelledby="welcome-title">
+      <div class="welcome-heading">
+        <p class="auth-eyebrow">YOUR LITTLE GREEN WORLD</p>
+        <h2 id="welcome-title">欢迎来到方寸森林</h2>
+        <p class="auth-description">给日常添一抹绿意，<br>从这里开启你的桌面生态之旅。</p>
+      </div>
+      <div class="welcome-actions">
+        <a class="auth-option auth-option-primary" href="/login" th:href="${currentAccount == null ? '/login' : '/main'}" data-auth-route>
+          <span class="option-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.3"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg>
+          </span>
+          <span class="option-copy">
+            <strong th:text="${currentAccount == null ? '商城账号登录' : '继续探索森林'}">商城账号登录</strong>
+            <small th:text="${currentAccount == null ? '使用你的账号与密码进入商城' : '欢迎回来，' + currentAccount.displayName}">使用你的账号与密码进入商城</small>
+          </span>
+          <svg class="option-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
+        </a>
+        <div class="auth-divider"><span>或者，先遇见一份绿意</span></div>
+        <a class="auth-option auth-option-guest" href="/main" th:href="@{/main}" data-enter-store>
+          <span class="option-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M6 19c0-7 4-12 13-13 0 9-5 13-13 13Zm0 0 7-7M6 19l-2 2"/></svg>
+          </span>
+          <span class="option-copy"><strong>先逛逛商城</strong><small>无需登录，也能发现自然的美好</small></span>
+          <svg class="option-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
+        </a>
+      </div>
+      <p class="welcome-footnote"><span aria-hidden="true">✧</span> 微景观 · 绿植 · 造景材料 · 养护工具</p>
+      <p class="auth-switch" th:if="${currentAccount == null}">第一次来？<a href="/register" th:href="@{/register}" data-auth-route>创建商城账号 →</a></p>
+      </div>
+    </div>
+    <footer th:replace="~{auth/fragments :: footer}"></footer>
+  </section>
+</main>
+</body>
+</html>

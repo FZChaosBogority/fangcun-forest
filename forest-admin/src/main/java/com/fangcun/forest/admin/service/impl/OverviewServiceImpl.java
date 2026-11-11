@@ -6,6 +6,11 @@ import com.fangcun.forest.admin.common.PageRequest;
 import com.fangcun.forest.admin.dto.DashboardSummary;
 import com.fangcun.forest.admin.entity.Category;
 import com.fangcun.forest.admin.entity.Product;
+import com.fangcun.forest.admin.entity.StoreUser;
+import com.fangcun.forest.admin.entity.SalesOrder;
+import com.fangcun.forest.admin.enums.UserRole;
+import com.fangcun.forest.admin.enums.OrderStatus;
+import com.fangcun.forest.admin.mapper.StoreUserMapper;
 import com.fangcun.forest.admin.enums.ProductStatus;
 import com.fangcun.forest.admin.mapper.CategoryMapper;
 import com.fangcun.forest.admin.mapper.ProductMapper;
@@ -22,12 +27,14 @@ public class OverviewServiceImpl implements OverviewService {
     private final CategoryMapper categoryMapper;
     private final ProductMapper productMapper;
     private final SalesOrderMapper orderMapper;
+    private final StoreUserMapper userMapper;
 
     public OverviewServiceImpl(CategoryMapper categoryMapper, ProductMapper productMapper,
-            SalesOrderMapper orderMapper) {
+            SalesOrderMapper orderMapper, StoreUserMapper userMapper) {
         this.categoryMapper = categoryMapper;
         this.productMapper = productMapper;
         this.orderMapper = orderMapper;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -37,7 +44,11 @@ public class OverviewServiceImpl implements OverviewService {
                 productMapper.selectCount(null),
                 productMapper.selectCount(new LambdaQueryWrapper<Product>()
                         .eq(Product::getStatus, ProductStatus.ON_SALE)),
-                orderMapper.selectCount(null));
+                orderMapper.selectCount(null),
+                userMapper.selectCount(new LambdaQueryWrapper<StoreUser>().eq(StoreUser::getRole, UserRole.CUSTOMER)),
+                orderMapper.selectCount(new LambdaQueryWrapper<SalesOrder>().eq(SalesOrder::getStatus, OrderStatus.PAID)),
+                productMapper.selectCount(new LambdaQueryWrapper<Product>().eq(Product::getStatus, ProductStatus.ON_SALE).le(Product::getStock, 5)),
+                orderMapper.paidAmount());
     }
 
     @Override

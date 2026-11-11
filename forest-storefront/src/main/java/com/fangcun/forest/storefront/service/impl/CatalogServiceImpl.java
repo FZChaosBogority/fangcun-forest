@@ -8,6 +8,7 @@ import com.fangcun.forest.storefront.entity.Category;
 import com.fangcun.forest.storefront.entity.Product;
 import com.fangcun.forest.storefront.entity.ProductImage;
 import com.fangcun.forest.storefront.enums.ProductStatus;
+import com.fangcun.forest.storefront.enums.ProductSort;
 import com.fangcun.forest.storefront.mapper.CategoryMapper;
 import com.fangcun.forest.storefront.mapper.ProductImageMapper;
 import com.fangcun.forest.storefront.mapper.ProductMapper;
@@ -41,13 +42,32 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public List<Product> findFeaturedProducts() {
-        return productMapper.selectPage(new Page<Product>(1, 4, false), onSaleQuery())
+        return productMapper.selectPage(new Page<Product>(1, 4, false), onSaleQuery().orderByAsc(Product::getSortOrder, Product::getId))
                 .getRecords();
     }
 
     @Override
-    public Page<Product> findProducts(Long categoryId, String keyword, PageRequest request) {
+    public List<Category> findAllCategories() {
+        return categoryMapper.selectList(new LambdaQueryWrapper<Category>().orderByAsc(Category::getSortOrder, Category::getId));
+    }
+
+    @Override
+    public List<Product> findRelatedProducts(Product product) {
+        return productMapper.selectPage(new Page<Product>(1, 3, false), onSaleQuery()
+                .eq(Product::getCategoryId, product.getCategoryId()).ne(Product::getId, product.getId())
+                .orderByAsc(Product::getSortOrder, Product::getId)).getRecords();
+    }
+
+    @Override
+    public Page<Product> findProducts(Long categoryId, String keyword, ProductSort sort, boolean inStock, PageRequest request) {
         LambdaQueryWrapper<Product> query = onSaleQuery();
+        query.gt(inStock, Product::getStock, 0);
+        switch (sort) {
+            case PRICE_ASC -> query.orderByAsc(Product::getPrice, Product::getId);
+            case PRICE_DESC -> query.orderByDesc(Product::getPrice).orderByAsc(Product::getId);
+            case NEWEST -> query.orderByDesc(Product::getCreatedAt, Product::getId);
+            default -> query.orderByAsc(Product::getSortOrder, Product::getId);
+        }
         String normalized = keyword == null ? "" : keyword.strip();
         if (normalized.length() > 120) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "商品名称搜索不能超过 120 个字符。");
@@ -102,8 +122,6 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     private LambdaQueryWrapper<Product> onSaleQuery() {
-        return new LambdaQueryWrapper<Product>()
-                .eq(Product::getStatus, ProductStatus.ON_SALE)
-                .orderByAsc(Product::getSortOrder, Product::getId);
+        return new LambdaQueryWrapper<Product>().eq(Product::getStatus, ProductStatus.ON_SALE);
     }
 }

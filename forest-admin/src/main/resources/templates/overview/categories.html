@@ -1,23 +1,7 @@
 <!DOCTYPE html>
-<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>商品分类 · 方寸森林</title><link rel="stylesheet" th:href="@{/css/forest.css}">
-</head>
-<body>
-<header th:replace="~{fragments/layout :: header}"></header>
-<main class="container">
-  <div class="page-heading"><h1>商品分类</h1></div>
-  <p th:replace="~{fragments/layout :: notice}"></p>
-  <div class="table-wrap"><table><caption class="sr-only">两级分类目录</caption>
-    <thead><tr><th>编号</th><th>分类编码</th><th>名称</th><th>层级</th><th>父分类编号</th><th>排序</th></tr></thead>
-    <tbody><tr th:each="category : ${categories}">
-      <td th:text="${category.id}"></td><td th:text="${category.code}"></td><td th:text="${category.name}"></td>
-      <td th:text="${category.parentId == null ? '一级' : '二级'}"></td>
-      <td th:text="${category.parentId ?: '—'}"></td><td th:text="${category.sortOrder}"></td>
-    </tr></tbody>
-  </table></div>
-  <p class="empty-state" th:if="${#lists.isEmpty(categories)}">暂无商品分类。</p>
-</main>
-</body>
-</html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"><head th:replace="~{fragments/layout :: head('分类管理')}"></head><body><header th:replace="~{fragments/layout :: header}"></header><main class="container">
+  <div class="page-heading"><p class="eyebrow">FOREST COLLECTIONS</p><h1>分类管理</h1><p class="muted">一级分类与二级商品类型，对应课程中的 Category / Product 分类层次。</p></div>
+  <div class="section-heading"><form class="search-bar" method="get" th:action="@{/categories}"><label for="keyword">名称或编码</label><input id="keyword" name="keyword" type="search" maxlength="80" th:value="${keyword}"><button class="button" type="submit">查询</button><a th:href="@{/categories}">清空</a></form><a class="button" th:href="@{/categories/new}">新增分类</a></div>
+  <div class="table-wrap"><table><thead><tr><th>ID</th><th>编码</th><th>名称</th><th>所属一级</th><th>排序</th><th>操作</th></tr></thead><tbody><tr th:each="category : ${categories}"><td th:text="${category.id}"></td><td th:text="${category.code}"></td><td th:text="${category.name}"></td><td th:text="${category.parentId == null ? '一级分类' : names[category.parentId]}"></td><td th:text="${category.sortOrder}"></td><td><div class="table-actions"><a class="text-link" th:href="@{/categories/{id}/edit(id=${category.id})}">编辑</a><form th:action="@{/categories/{id}/delete(id=${category.id})}" method="post" data-once-submit data-confirm="删除这个分类？有子分类或商品引用时不会删除。"><input type="hidden" name="revision" th:value="${revisions[category.id]}"><button class="link-button danger-text" type="submit">删除</button></form></div></td></tr></tbody></table></div>
+  <p class="empty-state" th:if="${#lists.isEmpty(categories)}">没有匹配的分类。</p>
+</main><footer th:replace="~{fragments/layout :: footer}"></footer></body></html>

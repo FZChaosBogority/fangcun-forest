@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#38583f">
+  <title>账号登录 · 方寸森林</title>
+  <link rel="icon" type="image/png" href="/images/forest-mascot.png" th:href="@{/images/forest-mascot.png}">
+  <link rel="stylesheet" href="/css/auth.css" th:href="@{/css/auth.css}">
+  <link rel="stylesheet" href="/css/page-transitions.css" th:href="@{/css/page-transitions.css}">
+  <link rel="stylesheet" href="/css/store-transitions.css" th:href="@{/css/store-transitions.css}">
+  <script src="/js/page-transition.js" th:src="@{/js/page-transition.js}" data-native-transitions></script>
+  <script defer src="/js/ink-reveal.js" th:src="@{/js/ink-reveal.js}"></script>
+  <script defer src="/js/auth.js" th:src="@{/js/auth.js}"></script>
+</head>
+<body class="auth-body">
+<main class="auth-layout">
+  <aside th:replace="~{auth/fragments :: story}"></aside>
+  <section class="auth-panel" aria-labelledby="login-title" data-auth-panel
+           data-welcome-url="/" th:data-welcome-url="@{/}" data-login-url="/login" th:data-login-url="@{/login}">
+    <div class="auth-panel-inner login-inner">
+      <a th:replace="~{auth/fragments :: brand}"></a>
+      <div class="auth-view" data-auth-view="login" aria-labelledby="login-title">
+      <div class="login-heading">
+        <a class="auth-back" href="/" th:href="@{/}" data-auth-route>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5m6-6-6 6 6 6"/></svg>返回欢迎页
+        </a>
+        <p class="auth-eyebrow">WELCOME BACK TO THE FOREST</p>
+        <h2 id="login-title">好久不见，森林旅人</h2>
+        <p class="auth-description">登录你的账号，继续探索方寸之间的绿意。</p>
+      </div>
+      <div class="auth-message auth-message-error" role="alert" th:if="${param.error != null}">
+        账号或密码不正确，或该账号暂不可用，请检查后重试。
+      </div>
+      <div class="auth-message auth-message-error" role="alert" th:if="${param.unavailable != null}">
+        暂时无法完成登录，请稍后重试。
+      </div>
+      <div class="auth-message" role="status" th:if="${param.expired != null}">
+        当前账号状态已变化，请重新确认账号信息后登录。
+      </div>
+      <div class="auth-message" role="status" th:if="${param.logout != null}">
+        已安全退出，期待与你再次相遇。
+      </div>
+      <div class="auth-message" role="status" th:if="${param.registered != null}">账号已创建，请使用新账号登录。</div>
+      <div class="auth-message auth-message-error" role="alert" th:if="${param.captcha != null}">验证码错误或已过期，请使用新图片重试。</div>
+      <form class="login-form" action="/login" th:action="@{/login}" method="post" data-login-form>
+        <input type="hidden" name="returnTo" th:value="${loginReturnTo}">
+        <div class="form-field">
+          <label for="username">商城账号</label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.3"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg>
+            <input id="username" name="username" type="text" placeholder="请输入商城账号"
+                   autocomplete="username" required maxlength="50" autocapitalize="none" spellcheck="false">
+          </div>
+        </div>
+        <div class="form-field">
+          <label for="password">登录密码</label>
+          <div class="input-wrap password-wrap">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/></svg>
+            <input id="password" name="password" type="password" placeholder="请输入密码"
+                   autocomplete="current-password" required maxlength="72">
+            <button class="password-toggle" type="button" data-password-toggle
+                    aria-controls="password" aria-label="显示密码" aria-pressed="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="form-field">
+          <label for="captcha">图片验证码</label>
+          <div class="captcha-row"><input id="captcha" name="captcha" type="text" placeholder="输入图中字母或数字" required minlength="4" maxlength="4" autocomplete="off" autocapitalize="characters">
+            <button type="button" class="captcha-refresh" data-captcha-refresh aria-label="刷新验证码"><img data-captcha-image src="/captcha?purpose=login" th:src="@{/captcha(purpose='login')}" alt="图片验证码，点击刷新" width="144" height="52"></button></div>
+          <small class="captcha-hint">不区分大小写 · 点击图片换一张</small>
+        </div>
+        <button class="auth-submit" type="submit" data-login-submit>
+          <span data-submit-label>登录，走进森林</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
+        </button>
+      </form>
+      <p class="auth-switch">还没有商城账号？<a href="/register" th:href="@{/register(returnTo=${loginReturnTo})}" data-auth-route>创建账号 →</a></p>
+      <div class="auth-divider login-divider"><span>想先看看？</span></div>
+      <a class="guest-text" href="/main" th:href="@{/main}" data-enter-store>先逛逛商城
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
+      </a>
+      </div>
+    </div>
+    <footer th:replace="~{auth/fragments :: footer}"></footer>
+  </section>
+</main>
+</body>
+</html>

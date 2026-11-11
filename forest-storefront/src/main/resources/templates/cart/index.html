@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>购物车 · 方寸森林</title><link rel="icon" type="image/png" th:href="@{/images/forest-mascot.png}"><link rel="stylesheet" th:href="@{/css/forest.css}">
+  <link rel="stylesheet" href="/css/page-transitions.css" th:href="@{/css/page-transitions.css}">
+  <link rel="stylesheet" href="/css/store-transitions.css" th:href="@{/css/store-transitions.css}">
+  <script src="/js/page-transition.js" th:src="@{/js/page-transition.js}" data-store-transitions></script>
+</head>
+<body><header th:replace="~{fragments/layout :: header}"></header>
+<main class="container">
+  <div class="page-heading"><p class="eyebrow">A BASKET OF LITTLE GREENS</p><h1>你的绿意清单</h1><p class="muted">挑选喜欢的补给，慢慢搭起一座小森林。</p></div>
+  <div class="empty-state" th:if="${cart.empty}"><h2>购物车里还没有绿意</h2><p>去发现一份喜欢的桌面补给吧。</p><a class="button" th:href="@{/category}">探索生态补给</a></div>
+  <div th:unless="${cart.empty}">
+    <form id="checkout-selection" method="get" th:action="@{/checkout}"></form>
+    <div class="table-wrap"><table class="cart-table"><thead><tr><th><label class="check-label"><input type="checkbox" data-select-all checked>全选</label></th><th>商品</th><th>单价</th><th>数量</th><th>小计</th><th>操作</th></tr></thead>
+      <tbody><tr th:each="line : ${cart.lines}" th:classappend="${!line.available} ? 'unavailable'">
+        <td><input type="checkbox" name="items" form="checkout-selection" th:value="${line.item.id}" th:checked="${line.available}" th:disabled="${!line.available}"
+                   data-cart-check th:data-amount="${line.amount}" th:aria-label="|选择${line.product.name}|"></td>
+        <td><a class="cart-product" th:href="@{/product(id=${line.product.id})}"><img th:src="${line.product.coverImage}" th:alt="${line.product.name}" width="72" height="72"><span><strong th:text="${line.product.name}"></strong><small class="muted" th:text="${line.product.sku}"></small></span></a><span class="field-error" th:if="${!line.available}" th:text="${line.issue}"></span></td>
+        <td th:text="|¥${#numbers.formatDecimal(line.product.price, 1, 2)}|"></td>
+        <td><form class="quantity-form" th:action="@{/cart/{id}/update(id=${line.item.id})}" method="post">
+          <input type="hidden" name="version" th:value="${line.item.version}"><input type="number" name="quantity" min="1" max="99" required th:value="${line.item.quantity}" th:aria-label="|${line.product.name}的数量|">
+          <button class="small-button" type="submit">更新</button></form></td>
+        <td class="price" th:text="|¥${#numbers.formatDecimal(line.amount, 1, 2)}|"></td>
+        <td><form th:action="@{/cart/{id}/remove(id=${line.item.id})}" method="post"><input type="hidden" name="version" th:value="${line.item.version}"><button class="link-button" type="submit">移除</button></form></td>
+      </tr></tbody></table></div>
+    <div class="cart-summary panel"><a class="text-link" th:href="@{/category}">← 继续挑选</a><div><span class="muted">所选商品合计（免运费）</span><strong class="price" data-cart-total th:text="|¥${#numbers.formatDecimal(cart.total, 1, 2)}|"></strong><button class="button" type="submit" form="checkout-selection" data-checkout-button>去结算</button></div></div>
+    <p class="muted fine-print">购物车不会预留库存。商品价格与库存会在下单时再次确认；单件最多 99 份，最多 20 种商品。</p>
+  </div>
+</main><footer th:replace="~{fragments/layout :: footer}"></footer></body></html>

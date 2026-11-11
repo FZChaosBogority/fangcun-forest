@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#38583f"><title>创建账号 · 方寸森林</title>
+  <link rel="icon" type="image/png" href="/images/forest-mascot.png" th:href="@{/images/forest-mascot.png}"><link rel="stylesheet" href="/css/auth.css" th:href="@{/css/auth.css}">
+  <link rel="stylesheet" href="/css/page-transitions.css" th:href="@{/css/page-transitions.css}"><link rel="stylesheet" href="/css/store-transitions.css" th:href="@{/css/store-transitions.css}"><script src="/js/page-transition.js" th:src="@{/js/page-transition.js}" data-native-transitions></script>
+  <script defer src="/js/ink-reveal.js" th:src="@{/js/ink-reveal.js}"></script><script defer src="/js/auth.js" th:src="@{/js/auth.js}"></script></head>
+<body class="auth-body"><main class="auth-layout"><aside th:replace="~{auth/fragments :: story}"></aside>
+  <section class="auth-panel" aria-labelledby="register-title" data-auth-panel data-welcome-url="/" th:data-welcome-url="@{/}" data-login-url="/login" th:data-login-url="@{/login}">
+    <div class="auth-panel-inner login-inner"><a th:replace="~{auth/fragments :: brand}"></a>
+      <div class="auth-view" data-auth-view="register" aria-labelledby="register-title">
+        <div class="login-heading"><a class="auth-back" href="/login" th:href="@{/login(returnTo=${loginReturnTo})}" data-auth-route>← 返回账号登录</a><p class="auth-eyebrow">PLANT YOUR FIRST LITTLE GREEN</p><h2 id="register-title">在森林里，留个名字</h2><p class="auth-description">创建你的商城账号，收藏属于自己的绿意日常。</p></div>
+        <form class="login-form register-form" action="/register" th:action="@{/register}" th:object="${registration}" method="post" data-register-form>
+          <input type="hidden" name="returnTo" th:value="${loginReturnTo}">
+          <div class="auth-message auth-message-error" role="alert" th:if="${#fields.hasAnyErrors()}"><p th:each="error : ${#fields.allErrors()}" th:text="${error}"></p></div>
+          <div class="form-field"><label for="username">商城账号</label><input id="username" th:field="*{username}" required pattern="[A-Za-z0-9_]{3,30}" minlength="3" maxlength="30" placeholder="3—30 位英文字母、数字或下划线" autocomplete="username" autocapitalize="none" spellcheck="false"></div>
+          <div class="form-field"><label for="displayName">你的昵称</label><input id="displayName" th:field="*{displayName}" required maxlength="50" placeholder="希望我们如何称呼你" autocomplete="nickname"></div>
+          <div class="form-field"><label for="email">邮箱（选填）</label><input id="email" th:field="*{email}" type="email" maxlength="120" placeholder="你的邮箱" autocomplete="email"></div>
+          <div class="form-field"><label for="password">设置密码</label><input id="password" name="password" type="password" required minlength="8" maxlength="64" placeholder="8—64 个字符，UTF-8 最多 72 字节" autocomplete="new-password"></div>
+          <div class="form-field"><label for="confirmPassword">确认密码</label><input id="confirmPassword" name="confirmPassword" type="password" required minlength="8" maxlength="64" placeholder="再次输入密码" autocomplete="new-password"></div>
+          <div class="form-field"><label for="captcha">图片验证码</label><div class="captcha-row"><input id="captcha" name="captcha" required minlength="4" maxlength="4" placeholder="图中字母或数字" autocomplete="off" autocapitalize="characters"><button type="button" class="captcha-refresh" data-captcha-refresh aria-label="刷新验证码"><img data-captcha-image src="/captcha?purpose=register" th:src="@{/captcha(purpose='register')}" alt="图片验证码，点击刷新" width="144" height="52"></button></div><small class="captcha-hint">不区分大小写 · 点击图片换一张</small></div>
+          <button class="auth-submit" type="submit" data-login-submit><span data-submit-label>创建商城账号</span><span aria-hidden="true">→</span></button>
+        </form>
+        <p class="auth-switch">已有账号？<a href="/login" th:href="@{/login(returnTo=${loginReturnTo})}" data-auth-route>前往登录 →</a></p><a class="guest-text" href="/main" th:href="@{/main}" data-enter-store>先逛逛商城 →</a>
+      </div>
+    </div><footer th:replace="~{auth/fragments :: footer}"></footer>
+  </section></main></body></html>

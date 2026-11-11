@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>确认订单 · 方寸森林</title><link rel="icon" type="image/png" th:href="@{/images/forest-mascot.png}"><link rel="stylesheet" th:href="@{/css/forest.css}">
+  <link rel="stylesheet" href="/css/page-transitions.css" th:href="@{/css/page-transitions.css}">
+  <link rel="stylesheet" href="/css/store-transitions.css" th:href="@{/css/store-transitions.css}">
+  <script src="/js/page-transition.js" th:src="@{/js/page-transition.js}" data-store-transitions></script>
+</head>
+<body><header th:replace="~{fragments/layout :: header}"></header><main class="container">
+  <div class="page-heading"><p class="eyebrow">LET THE FOREST FIND YOU</p><h1>确认这一份绿意</h1><p class="muted">填写收货信息，确认商品后提交订单。</p></div>
+  <form class="checkout-layout" th:action="@{/checkout}" th:object="${shipping}" method="post" data-once-submit>
+    <input type="hidden" name="token" th:value="${token}">
+    <section class="panel"><h2>送到哪里</h2>
+      <div class="notice error-notice" role="alert" th:if="${#fields.hasAnyErrors()}"><p th:each="error : ${#fields.allErrors()}" th:text="${error}"></p></div>
+      <div class="shop-field"><label for="receiverName">收货人</label><input id="receiverName" th:field="*{receiverName}" autocomplete="name" required maxlength="50" placeholder="收货人姓名"></div>
+      <div class="shop-field"><label for="receiverPhone">联系电话</label><input id="receiverPhone" th:field="*{receiverPhone}" type="tel" autocomplete="tel" required minlength="6" maxlength="20" placeholder="便于联系的电话号码"></div>
+      <div class="shop-field"><label for="receiverAddress">详细地址</label><textarea id="receiverAddress" th:field="*{receiverAddress}" autocomplete="street-address" required minlength="5" maxlength="255" rows="4" placeholder="省市区、街道与门牌号"></textarea></div>
+      <a class="text-link" th:href="@{/cart}">← 返回购物车调整</a>
+    </section>
+    <section class="panel order-summary"><h2>这次的补给</h2>
+      <div class="checkout-line" th:each="line : ${draft.lines}"><img th:src="${line.image}" th:alt="${line.name}" width="64" height="64"><div><strong th:text="${line.name}"></strong><small th:text="|¥${#numbers.formatDecimal(line.unitPrice, 1, 2)} × ${line.quantity}|"></small></div><span th:text="|¥${#numbers.formatDecimal(line.amount, 1, 2)}|"></span></div>
+      <div class="money-row"><span>配送费用</span><span>¥0.00</span></div><div class="money-row"><strong>订单总额</strong><strong class="price" th:text="|¥${#numbers.formatDecimal(draft.total, 1, 2)}|"></strong></div>
+      <p class="fine-print muted">提交订单后预留库存，可前往模拟支付或取消待付款订单。结算页面有效期为 30 分钟。</p><button class="button full-button" type="submit">提交订单</button>
+    </section>
+  </form>
+</main><footer th:replace="~{fragments/layout :: footer}"></footer></body></html>
