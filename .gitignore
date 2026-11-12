@@ -6,6 +6,7 @@ logs/
 .local/
 submission/
 reports/
+uploads/
 **/*实验*报告*
 **/*lab-report*
 

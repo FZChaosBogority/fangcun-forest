@@ -28,6 +28,7 @@
 | 确认收货 | 仅本人 SHIPPED → COMPLETED，重复确认不重写首次时间 | 用户端 `OrderService.complete` |
 | 后台分类维护 | 两级增删查改；编码和父子关系创建后固定；关联删除拒绝 | `CategoryService`、`CategoryController` |
 | 后台商品维护 | 新增 DRAFT、修改资料、上架/下架、相册；SKU 固定，旧版本不覆盖新资料 | `ProductService`、`ProductController` |
+| 商品封面上传 | 新增/编辑时选择 JPG/PNG 自动上传预览；5MB 限制、像素重编码、随机文件名、双端共用持久目录 | `CoverUploadController`、`CoverImageStorage`、两端 `UploadedImagesConfig` |
 | 增量补货 | 锁定数据库当前商品后增量增加库存，不依赖页面旧库存或旧版本 | `ProductService.restock`、`ProductMapper.restock` |
 | 商品删除 | 按指导书保留受限删除；仅下架且无购物车/历史订单引用时允许 | `ProductService.delete` |
 | 用户信息与密码重置 | 普通用户资料、启停、密码重置；管理员只读；不提供角色提升 | `UserService`、`UserController` |

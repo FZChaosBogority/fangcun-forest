@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"><head th:replace="~{fragments/layout :: head('维护商品')}"></head><body><header th:replace="~{fragments/layout :: header}"></header><main class="container">
   <div class="page-heading"><a class="text-link" th:href="@{/products}">← 商品管理</a><h1 th:text="${id == null ? '新增生态补给' : '编辑生态补给'}"></h1><p class="muted">商品资料与库存分别维护，历史订单保留成交快照。</p></div>
-  <div class="admin-detail-grid"><form class="panel admin-form" th:object="${form}" th:action="${id == null} ? @{/products/new} : @{/products/{id}/edit(id=${id})}" method="post" data-once-submit>
+  <div class="admin-detail-grid"><form class="panel admin-form" th:object="${form}" th:action="${id == null} ? @{/products/new} : @{/products/{id}/edit(id=${id})}" method="post" data-once-submit data-cover-form th:data-upload-url="@{/media/covers}" th:data-csrf-header="${_csrf.headerName}">
     <div th:replace="~{fragments/layout :: errors}"></div><input type="hidden" th:field="*{version}">
     <div class="form-grid"><div class="admin-field"><label for="sku">商品 SKU</label><input id="sku" th:field="*{sku}" required maxlength="40" pattern="[A-Za-z0-9][A-Za-z0-9_-]{0,39}" th:readonly="${id != null}"><small class="muted">SKU 创建后固定。</small></div>
       <div class="admin-field"><label for="categoryId">二级分类</label><select id="categoryId" th:field="*{categoryId}" required><option value="">请选择</option><option th:each="category : ${categories}" th:value="${category.id}" th:text="|${category.name} (#${category.id})|"></option></select></div>
@@ -9,12 +9,20 @@
       <div class="admin-field"><label for="price">销售单价（元）</label><input id="price" th:field="*{price}" type="number" min="0.01" max="9999999999.99" step="0.01" required></div><div class="admin-field"><label for="sortOrder">显示排序</label><input id="sortOrder" th:field="*{sortOrder}" type="number" min="0" max="1000000" required></div>
       <div class="admin-field full-field"><label for="summary">商品简介</label><textarea id="summary" th:field="*{summary}" maxlength="500" rows="2"></textarea></div>
       <div class="admin-field full-field"><label for="description">商品详情</label><textarea id="description" th:field="*{description}" maxlength="16000" rows="6"></textarea></div>
-      <div class="admin-field full-field"><label for="coverImage">封面图片路径</label><input id="coverImage" th:field="*{coverImage}" maxlength="255" required data-cover-input><small class="muted">使用两端静态 images 目录内的图片，如 /images/terrarium.svg。</small></div>
+      <div class="admin-field full-field cover-upload"><label for="coverFile">商品封面</label>
+        <input id="coverFile" type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg" data-cover-file aria-describedby="coverHelp coverStatus">
+        <small id="coverHelp" class="muted">选择本机 JPG 或 PNG 图片（不超过 5MB）后自动上传，成功后点击保存商品资料。</small>
+        <p id="coverStatus" class="cover-upload-status muted" data-cover-status role="status" aria-live="polite" aria-atomic="true">尚未选择新图片，保存时使用当前封面。</p>
+        <div class="cover-upload-actions"><button class="small-button" type="button" data-cover-retry hidden>重新上传</button><button class="small-button" type="button" data-cover-cancel hidden>取消本次选择</button></div>
+        <noscript><p class="notice">直接上传需要启用 JavaScript，也可以在下方填写已有图片路径。</p></noscript>
+        <label for="coverImage">封面图片路径（上传成功后自动填写）</label><input id="coverImage" th:field="*{coverImage}" maxlength="255" required data-cover-input>
+        <small class="muted">也可填写已有的 /images/ 本地图片路径。上传的封面由管理端和商城端共同读取。</small>
+      </div>
       <div class="admin-field full-field"><label for="images">相册图片路径（每行一个，最多 8 张）</label><textarea id="images" th:field="*{images}" rows="3" maxlength="2200" placeholder="/images/terrarium.svg"></textarea></div>
       <div class="admin-field" th:if="${id == null}"><label for="initialStock">初始库存</label><input id="initialStock" th:field="*{initialStock}" type="number" min="0" max="2000000000" required></div>
-    </div><button class="button" type="submit">保存商品资料</button>
+    </div><button class="button" type="submit" data-product-save>保存商品资料</button>
   </form>
-  <aside><section class="panel"><h2>封面预览</h2><img class="admin-cover" data-cover-preview th:src="${form.coverImage}" alt="商品封面预览" width="320" height="240"></section>
+  <aside class="product-form-aside"><section class="panel"><h2>封面预览</h2><img class="admin-cover" data-cover-preview th:src="${form.coverImage}" alt="商品封面预览" width="320" height="240"></section>
     <section class="panel" th:if="${product != null}"><h2>销售与库存</h2><p><span class="status-badge" th:text="${product.status.name() == 'ON_SALE' ? '已上架' : '未上架'}"></span></p><p>当前库存 <strong class="price" th:text="${product.stock}"></strong></p><small class="muted" th:text="|数据版本 ${product.version}|"></small>
       <form th:action="@{/products/{id}/status(id=${id})}" method="post" data-once-submit><input type="hidden" name="version" th:value="${product.version}"><input type="hidden" name="status" th:value="${product.status.name() == 'ON_SALE' ? 'DRAFT' : 'ON_SALE'}"><button class="button full-button" type="submit" th:text="${product.status.name() == 'ON_SALE' ? '下架商品' : '上架商品'}"></button></form>
       <form th:action="@{/products/{id}/restock(id=${id})}" method="post" data-once-submit><input type="hidden" name="version" th:value="${product.version}"><div class="admin-field"><label for="restock">新增补货数量</label><input id="restock" name="quantity" type="number" min="1" max="1000000" required></div><button class="button secondary full-button" type="submit">增加库存</button></form>
